@@ -1,0 +1,107 @@
+/* 사례형 — tokens.css
+   레퍼런스 실측값(this.design · Skylab 사례 페이지, 2026-09-27, 1280×800 · 390×844)을 토큰으로 옮긴 파일.
+   레퍼런스는 Tailwind(1rem = 16px) 고정 px 설계 + 768px(md)·1024px(lg) 두 분기점이다.
+   학생은 이 파일을 고치지 않는다 — my-style.css 만 고친다. */
+:root {
+  /* ── 색 (레퍼런스 실측) ───────────────────── */
+  --c-page: #FFFFFF;             /* 사례 바탕(카드·커튼·이미지 판) — 레퍼런스는 사례마다 이 한 값을 바꾼다 */
+  --c-ink: #000000;              /* 카드 글자 */
+  --c-ink-inverse: #F2F2F0;      /* 짙은 판 위 글자 · 푸터 글자 rgb(242,242,240) */
+  --c-stage: #000000;            /* body · 히어로 뒤 · 푸터 */
+  --c-tag-bg: #EDEDED;           /* 카드 분야 칩 바탕 */
+  --c-tag-ink: #808080;          /* 카드 분야 칩 글자 */
+  --c-chip-dark: #2B2B2B;        /* 관련 작업 타일 칩 바탕 */
+  --c-button: #010101;           /* 처음으로 버튼 */
+  --c-back: #1E1E1E;             /* 돌아가기 원 버튼 */
+  --c-back-ink: #FAFAFA;
+  --c-note-bg: #F9F9FB;          /* 이미지 사이 글 카드 바탕 */
+  --c-tile-shade: rgba(0, 0, 0, .5);        /* 관련 작업 타일 바탕 bg-black/50 */
+  --c-caption-dim: rgba(226, 226, 226, .4); /* 화살표·한 줄 설명 text-theme-dark-gray/40 */
+  --c-hero-veil: rgba(0, 0, 0, .3);        /* 히어로 사진 위 얇은 막 — 원본에 없음. 밝은 학생 사진에서 흰 제목이 읽히게(대비 4.5:1 목표) */
+
+  /* ── 글자 크기 단계 (1280 실측) ─────────────── */
+  --fs-lead: 36px;               /* h1 리드 문단 lg:text-4xl · lh 1.15 · 자간 -.3px */
+  --fs-lead-md: 30px;            /* md:text-3xl */
+  --fs-lead-sm: 24px;            /* 기본 text-2xl (390 실측 24px / lh 27.6px) */
+  --lh-lead: 1.15;
+  --ls-lead: -.3px;
+  --fs-body: 16px;               /* 본문·크레딧 16px / lh 1.4 / 자간 -.2px */
+  --lh-body: 1.4;
+  --ls-body: -.2px;
+  --fs-tag: 12px;                /* 칩 text-xs 600 */
+  --fs-related-h: 24px;          /* 관련 작업 제목 text-2xl 400 */
+  --fs-button: 14px;             /* 처음으로 text-sm 600 */
+  --fs-tile: 1.5vw;              /* 관련 타일 제목 xl:1.5vw(25.6px@1280·≥1280) */
+  --fs-tile-lg: 2vw;             /* lg 1024~1279 */
+  --fs-tile-md: 2.5vw;           /* md 768~1023 */
+  --fs-tile-sm: 24px;            /* 모바일 */
+  --fs-cta: 110px;               /* 푸터 연락 한 줄 — 원본 SVG 높이 110px@1280 */
+  --fs-cta-sm: 15vw;             /* 390에서 원본 폭 330px(=화면-60) 에 맞춤 → sig.js 가 폭을 재서 줄인다 */
+  --fs-title-max: 150px;         /* 히어로 제목 상한 — 원본 로고 폭 438px/1280(34%) 대비 크게 두되 화면 88% 넘지 않게 sig.js 가 맞춤 */
+  --fs-title-min: 28px;
+
+  /* ── 굵기 (Suisse Intl 역할) ─────────────── */
+  --w-light: 300;
+  --w-regular: 400;
+  --w-medium: 500;
+  --w-semibold: 600;
+  --w-bold: 700;
+
+  /* ── 간격 ─────────────────────────────────── */
+  --intro-pad-outer: 48px;       /* 카드 바깥 md:p-12 (390: 12px) */
+  --intro-pad-outer-sm: 12px;
+  --intro-pad-x: 160px;          /* 카드 안 lg:px-40 */
+  --intro-pad-x-md: 40px;        /* md:px-10 */
+  --intro-pad-y: 80px;           /* md:py-20 */
+  --intro-pad-sm: 20px;          /* 모바일 p-5 */
+  --intro-max: 1440px;
+  --intro-gap: 20px;             /* 칩 줄 ↔ 글 기둥 gap-5 */
+  --col-gap: 56px;               /* 리드 기둥(2) ↔ 크레딧 기둥(1) md:gap-14 */
+  --col-gap-sm: 24px;
+  --tag-h: 33px;
+  --tag-pad: 8px 14px 10px;
+  --tag-gap: 10px;
+  --grid-gap: 10px;              /* 이미지 판 p-2.5 · gap-2.5 */
+  --board-pad-bottom: 20px;
+  --board-max: 1440px;
+  --note-pad: 80px 48px;         /* 이미지 사이 글 lg:px-12 lg:py-20 */
+  --note-pad-sm: 40px 20px;
+  --related-pad: 70px 20px 20px; /* 관련 작업 머리 md:pt-[70px] px-5 pb-5 */
+  --related-pad-sm: 40px 20px 20px;
+  --footer-pad: 0 30px 20px;     /* 푸터 px-7.5 pb-5 */
+  --footer-cta-pad: 112px;       /* py-28 */
+  --back-size: 56px;             /* 돌아가기 w-14 */
+  --back-inset: 32px;            /* md:top-8 left-8 (모바일 16px) */
+  --back-inset-sm: 16px;
+
+  /* ── 모서리 ───────────────────────────────── */
+  /* 모서리 라운딩 0 — 교수 지시(2026-10-04). 원본 값: intro 24 · tile 10 · tag 6→16 · button 50 · 돌아가기 원 */
+  --r-intro: 0;
+  --r-tile: 0;
+  --r-tag: 0;
+  --r-tag-hover: 0;
+  --r-button: 0;
+
+  /* ── 비율 ─────────────────────────────────── */
+  --ar-full: 16 / 9;             /* 전폭 한 장 (원본은 원본비 — 대체표 참고) */
+  --ar-pair: 4 / 5;              /* 두 장 나란히 aspect-4/5 */
+  --ar-wide: 5 / 4;              /* 넓은 두 장 + 긴 한 장 aspect-5/4 */
+  --ar-related: 3 / 5;           /* 관련 작업 aspect-3/5 */
+  --related-w-sm: 80vw;          /* 모바일 슬라이드 !w-[80vw] */
+  --related-h-sm: calc(100svh - 170px);
+
+  /* ── 움직임 (레퍼런스 실측) ─────────────────── */
+  --ease-reveal: cubic-bezier(.165, .84, .44, 1);   /* .animateable transition all 1s */
+  --t-reveal: 1s;
+  --reveal-scale: 1.05;          /* 안쪽 사진 scale-105 → 100 */
+  --reveal-margin: -15%;         /* IntersectionObserver rootMargin 0 0 -15% 0 · 한 번만 */
+  --ease-hover: cubic-bezier(.77, 0, .175, 1);      /* GSAP power4.inOut 근사 */
+  --t-hover: .5s;
+  --hover-scale: 1.1;            /* 관련 타일 사진 scale 1.1 */
+  --ease-enter: cubic-bezier(.215, .61, .355, 1);   /* power3.out */
+  --t-enter: 1s;
+  --enter-y: 40px;               /* 머리 요소 opacity 0·y 40 → 1·0 */
+  --enter-delay: .25s;
+  --t-chip: .5s;                 /* 칩 hover 모서리 6 → 16px · 바탕 투명도 .5 */
+  --t-underline: .5s;            /* 링크 밑줄 scaleX 0 → 1 */
+}

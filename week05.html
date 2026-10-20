@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5주 사람 — 나의 취향 아카이브</title>
+<meta name="description" content="혼자만의 시간에서 나를 찾는 사람">
+<meta property="og:title" content="5주 사람 — 나의 취향 아카이브">
+<meta property="og:description" content="혼자만의 시간에서 나를 찾는 사람">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/lake_01.jpg">
+<script>document.documentElement.className += " js";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:wght@300;400;600&family=Nanum+Gothic+Coding:wght@400;700&family=Gaegu:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="my-style.css">
+</head>
+<body class="pg-archive pg-detail">
+<!-- GNB: 아카이브와 주차별 상세 페이지로 이동 -->
+<nav class="gnb" aria-label="주차 메뉴">
+  <a class="gnb__home" href="index.html">시연아카이브</a>
+  <a href="week04.html">시선</a>
+  <a href="week05.html" aria-current="page">사람</a>
+  <a href="week06.html">공간</a>
+</nav>
+
+<!-- 사람 페이지 — 아카이브의 사람 파트를 그대로 옮김 (학생 요청 · 2026-10-20). 이전 페이지는 weeks/06/site_backup_before_split/week05.html -->
+<main class="cs-stage">
+  <div class="cs-over">
+    <div class="cs-board cl">
+      <section class="cl-chapter al" id="ch2" aria-label="사람">
+        <!-- 사람 — 앨범 패키지 (학생 요청 · 아이디어 4) · 동작은 album.js
+             왼쪽: CD 케이스(앞면 = HAUM 사진) · 트랙에 마우스를 올리면 CD 가 케이스 밖으로 나와 돌며 그 트랙의 사진이 CD 에 비침
+             오른쪽: 트랙 리스트 = 이유 셋(제목 · 본 것 · 해석), ▶ 무대 영상 · 뮤비 링크, BONUS = 사진 6장 -->
+        <div class="al-stage">
+          <div class="al-left">
+            <div class="al-pack">
+              <div class="al-disc" role="button" aria-label="CD 사진 크게 보기"><div class="al-disc__art" style="background-image:url('assets/w05_haeum01_visual.jpg')"></div><span class="al-disc__hole"></span></div>
+              <div class="al-case">
+                <img class="al-cover" src="assets/w05_haeum03_concept.jpg" width="1200" height="1600" alt="2장 사람 이유 2 컨셉 소화력 사진 1">
+                <span class="al-cover__name">HAUM</span><span class="al-cover__sub">사람 · 5주</span>
+                <span class="al-case__hinge" aria-hidden="true"></span><span class="al-case__glare" aria-hidden="true"></span>
+              </div>
+            </div>
+            <div class="al-player">
+              <button class="al-playbtn" type="button" aria-label="KiiiKiii Pop Off Pop Off 재생"><span class="al-playbtn__icon" aria-hidden="true">▶</span><span class="al-playbtn__t"><b>Pop Off Pop Off</b> KiiiKiii</span><span class="al-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
+            </div>
+          </div>
+          <div class="al-back">
+            <p class="al-kicker">사람</p>
+            <h3 class="al-title">HAUM</h3>
+            <ol class="al-tracks">
+            <li class="al-track" data-art="assets/w05_haeum01_visual.jpg"><button type="button" class="al-track__btn"><span class="al-no">01</span><span class="al-name" lang="en">Visual</span><span class="al-dots" aria-hidden="true"></span></button><p class="al-note"><span>위로 올라간 눈매, 얼굴상</span></p></li>
+            <li class="al-track" data-art="assets/w05_haeum03_concept.jpg"><button type="button" class="al-track__btn"><span class="al-no">02</span><span class="al-name" lang="en">Concept</span><span class="al-dots" aria-hidden="true"></span></button><p class="al-note"><span>다양한 컨셉 소화</span></p></li>
+            <li class="al-track" data-art="assets/w05_haeum05_gal.jpg"><button type="button" class="al-track__btn"><span class="al-no">03</span><span class="al-name" lang="en">Performance</span><span class="al-dots" aria-hidden="true"></span></button><p class="al-note"><span>무대 위에서의 표정연기</span></p></li>
+            </ol>
+            <div class="al-play" lang="en">
+              <a class="al-play__a" href="https://www.youtube.com/watch?v=0g9M_-gdH88&amp;list=RD0g9M_-gdH88&amp;start_radio=1" target="_blank" rel="noopener"><span aria-hidden="true">▶</span> Watch Stage</a>
+              <a class="al-play__a" href="https://www.youtube.com/watch?v=R9miRFaYbWo&amp;list=RDR9miRFaYbWo&amp;start_radio=1" target="_blank" rel="noopener"><span aria-hidden="true">▶</span> Watch MV</a>
+            </div>
+            <div class="al-bonus"><span class="al-bonus__h">BONUS</span>
+              <button type="button" class="al-b" data-art="assets/w05_haeum04_gal.jpg" aria-label="2장 사람 HAUM 사진 1"><img src="assets/w05_haeum04_gal.jpg" width="1200" height="900" alt="" loading="lazy"></button>
+              <button type="button" class="al-b" data-art="assets/w05_haeum05_gal.jpg" aria-label="2장 사람 HAUM 사진 2"><img src="assets/w05_haeum05_gal.jpg" width="1080" height="720" alt="" loading="lazy"></button>
+              <button type="button" class="al-b" data-art="assets/w05_haeum06_gal.jpg" aria-label="2장 사람 HAUM 사진 3"><img src="assets/w05_haeum06_gal.jpg" width="736" height="552" alt="" loading="lazy"></button>
+              <button type="button" class="al-b" data-art="assets/w05_haeum07_gal.jpg" aria-label="2장 사람 HAUM 사진 4"><img src="assets/w05_haeum07_gal.jpg" width="736" height="491" alt="" loading="lazy"></button>
+              <button type="button" class="al-b" data-art="assets/w05_haeum08_gal.jpg" aria-label="2장 사람 HAUM 사진 5"><img src="assets/w05_haeum08_gal.jpg" width="735" height="517" alt="" loading="lazy"></button>
+              <button type="button" class="al-b" data-art="assets/w05_haeum09_gal.jpg" aria-label="2장 사람 HAUM 사진 6"><img src="assets/w05_haeum09_gal.jpg" width="858" height="638" alt="" loading="lazy"></button>
+            </div>
+          </div>
+        </div>
+        <ul class="al-list" hidden>
+          <li><img src="assets/w05_haeum01_visual.jpg" width="1080" height="721" alt="2장 사람 이유 1 고양이상 비주얼 사진 1"></li>
+          <li><img src="assets/w05_haeum03_concept.jpg" width="1200" height="1600" alt="2장 사람 이유 2 컨셉 소화력 사진 1"></li>
+          <li><img src="assets/w05_haeum04_gal.jpg" width="1200" height="900" alt="2장 사람 HAUM 사진 1"></li>
+          <li><img src="assets/w05_haeum05_gal.jpg" width="1080" height="720" alt="2장 사람 HAUM 사진 2"></li>
+          <li><img src="assets/w05_haeum06_gal.jpg" width="736" height="552" alt="2장 사람 HAUM 사진 3"></li>
+          <li><img src="assets/w05_haeum07_gal.jpg" width="736" height="491" alt="2장 사람 HAUM 사진 4"></li>
+          <li><img src="assets/w05_haeum08_gal.jpg" width="735" height="517" alt="2장 사람 HAUM 사진 5"></li>
+          <li><img src="assets/w05_haeum09_gal.jpg" width="858" height="638" alt="2장 사람 HAUM 사진 6"></li>
+        </ul>
+      </section>
+      <!-- 세 장 — 목차 (학생 요청 · 참고: aventuradentalarts.com 목차 화면) · 동작은 index-list.js
+           왼쪽 큰 번호 01 / 03 · 가운데 사진 · 오른쪽 큰 명조 제목 목록. 스크롤하면 제목이 하나씩 위로 사라지며 다음 장으로 바뀌고(사진·번호도), 누르면 그 페이지로 -->
+      <section class="cs-related ix" aria-labelledby="ix-title">
+        <div class="ix-pin">
+          <div class="ix-count" aria-hidden="true"><span class="ix-count__n">01</span><span class="ix-count__t">/ 03</span></div>
+          <figure class="ix-figure"><img class="ix-img" src="assets/w04_sky1.jpg" alt="1장 시선 하늘 사진 1"></figure>
+          <div class="ix-list">
+            <p class="ix-kicker" id="ix-title">세 장</p>
+            <ol class="ix-rows">
+              <li class="ix-row is-on" data-img="assets/w04_sky1.jpg" data-alt="1장 시선 하늘 사진 1"><a class="ix-link" href="week04.html">시선</a></li>
+              <li class="ix-row" data-img="assets/w05_haeum03_concept.jpg" data-alt="2장 사람 이유 2 컨셉 소화력 사진 1"><a class="ix-link" href="week05.html">사람</a></li>
+              <li class="ix-row" data-img="assets/library_01.jpg" data-alt="3장 공간 library 사진 1"><a class="ix-link" href="week06.html">공간</a></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script src="sig.js"></script>
+<script src="album.js"></script>
+<script src="index-list.js"></script>
+</body>
+</html>

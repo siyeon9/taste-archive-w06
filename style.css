@@ -1,0 +1,1193 @@
+/* 사례형 — style.css (구성)
+   값은 tokens.css, 학생 값은 my-style.css, 파생 색은 sig.js 가 --bg·--ink… 로 넣는다.
+   hex 직접 입력 없음. 스크롤을 가로채지 않는다(겹침은 position: sticky). */
+
+/* ── 파생 색 기본값 (sig.js 가 덮어쓴다 · JS 없이도 보이게) ── */
+:root {
+  --bg: var(--c-page);
+  --ink: var(--c-ink);
+  --tag-bg: var(--c-tag-bg);
+  --tag-ink: var(--c-tag-ink);
+  --note-bg: var(--c-note-bg);
+  --point: var(--c-button);
+  --point-ink: var(--c-ink);
+  --on-point: var(--c-ink-inverse);
+  --f-sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", sans-serif;
+  --f-serif: "Newsreader", "Noto Serif KR", serif;
+  --f-serif-ko: "Noto Serif KR", "Newsreader", serif;
+  --f-mono: "IBM Plex Mono", "Nanum Gothic Coding", monospace;
+  --f-hand: "Gaegu", "Pretendard Variable", sans-serif;
+  --f-body: var(--f-sans);
+  --f-accent: var(--f-serif-ko);   /* 푸터 기울임 한 단어 */
+  --k: 1;                          /* 밀도 글자 배율 */
+  --gap: var(--grid-gap);
+  --pad-y: var(--intro-pad-y);
+  --pad-x: var(--intro-pad-x);
+  --lead: var(--fs-lead);
+  --intro-top: 0px;                /* sig.js: min(0, 화면 높이 − 카드 높이) */
+  --reveal-y: 0px;
+  --reveal-s: var(--reveal-scale);
+  --hover-s: var(--hover-scale);
+}
+html.t-serif { --f-body: var(--f-serif-ko); --f-accent: var(--f-sans); }
+html.t-mono  { --f-body: var(--f-mono); }
+html.t-hand  { --f-body: var(--f-hand); }
+html.d-0 { --k: .92; --gap: 20px; --pad-y: 120px; --pad-x: 200px; }
+html.d-2 { --k: 1.1; --gap: 4px;  --pad-y: 56px;  --pad-x: 96px; }
+html.m-2 { --reveal-y: 48px; --reveal-s: 1.12; --hover-s: 1.18; }
+
+* { box-sizing: border-box; }
+html { background: var(--c-stage); }
+body {
+  margin: 0;
+  background: var(--c-stage);
+  color: var(--c-ink-inverse);
+  font-family: var(--f-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+figure { margin: 0; }
+ul { list-style: none; margin: 0; padding: 0; }
+p { margin: 0; }
+a { color: inherit; }
+
+/* ── 돌아가기 원 버튼 ─────────────────────── */
+.cs-back {
+  position: fixed; z-index: 20;
+  top: var(--back-inset-sm); left: var(--back-inset-sm);
+  width: var(--back-size); height: var(--back-size);
+  display: block;
+}
+.cs-back svg { width: 100%; height: 100%; display: block; }
+.cs-back__disc { fill: var(--c-back); }
+.cs-back__arrow { stroke: var(--c-back-ink); stroke-width: 1.7; fill: none; stroke-linecap: square; }
+.cs-back:focus-visible { outline: 2px solid var(--c-ink-inverse); outline-offset: 3px; border-radius: 0; }
+@media (min-width: 768px) { .cs-back { top: var(--back-inset); left: var(--back-inset); } }
+
+/* ── ① 히어로 (화면에 붙음) ───────────────── */
+.cs-stage { position: relative; }
+.cs-hero {
+  position: sticky; top: 0; z-index: 0;
+  height: 100vh; height: 100svh;
+  overflow: hidden;
+  background: var(--c-stage);
+}
+.cs-hero__media, .cs-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cs-hero__img { object-fit: cover; }
+.cs-hero__media::before { content: ""; position: absolute; inset: 0; z-index: 1; background: var(--c-hero-veil); pointer-events: none; }
+.cs-title {
+  position: absolute; inset: 0; margin: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 6vw;
+  color: var(--c-ink-inverse);
+  font-family: var(--f-body);
+  font-weight: var(--w-bold);
+  font-size: var(--title-fs, clamp(var(--fs-title-min), 9vw, var(--fs-title-max)));
+  line-height: 1.02;
+  letter-spacing: -.03em;
+  text-align: center;
+  white-space: nowrap;
+}
+.t-serif .cs-title { font-weight: var(--w-semibold); letter-spacing: -.02em; }
+.cs-title__text { display: inline-block; }
+.cs-title__line { display: block; }
+.cs-title.is-wrap { white-space: normal; }
+.cs-title, .cs-cta { overflow-wrap: normal; word-break: keep-all; }
+.cs-title.is-wrap .cs-title__text { display: block; width: 100%; text-wrap: balance; }
+
+/* ── 겹쳐 올라오는 층 ─────────────────────── */
+.cs-over { position: relative; z-index: 1; }
+
+/* ② 정보 카드 — 바닥이 화면 바닥에 닿으면 멈추고, 커튼과 이미지 판이 그 위를 덮는다 */
+.cs-intro {
+  position: sticky; top: var(--intro-top);
+  z-index: 1;
+  min-height: 100vh; min-height: 100svh;
+  padding: var(--intro-pad-outer-sm);
+  display: flex;
+}
+.cs-intro__card {
+  width: 100%; max-width: var(--intro-max); margin: 0 auto;
+  border-radius: var(--r-intro);
+  background: var(--bg); color: var(--ink);
+  padding: var(--intro-pad-sm);
+  display: flex; flex-direction: column; justify-content: center;
+  gap: var(--intro-gap);
+}
+.cs-tags { display: flex; flex-wrap: wrap; gap: 8px var(--tag-gap); }
+.cs-tag {
+  position: relative; height: var(--tag-h);
+  display: inline-flex; align-items: center;
+  padding: var(--tag-pad);
+  font-family: var(--f-sans);
+  font-size: var(--fs-tag); font-weight: var(--w-semibold); line-height: 16px; letter-spacing: 0;
+  color: var(--tag-ink);
+  border-radius: var(--r-tag);
+  background: var(--tag-bg);
+  transition: border-radius var(--t-chip), background-color var(--t-chip);
+}
+.m-on .cs-tag:hover { border-radius: var(--r-tag-hover); background: color-mix(in srgb, var(--tag-bg) 50%, transparent); }
+.cs-intro__cols { display: flex; flex-direction: column; gap: var(--col-gap-sm); }
+.cs-intro__main { display: flex; flex-direction: column; }
+.cs-lead {
+  font-size: calc(var(--fs-lead-sm) * var(--k));
+  line-height: var(--lh-lead);
+  letter-spacing: var(--ls-lead);
+  font-weight: var(--w-regular);
+  margin-bottom: 20px;
+}
+.cs-lead strong, .cs-credits strong { font-weight: var(--w-semibold); }
+.cs-client { text-decoration: none; position: relative; display: inline; color: var(--point-ink); }
+.cs-client::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.08em;
+  border-bottom: .05em solid currentColor;
+  transform: scaleX(0); transform-origin: 100% 0;
+  transition: transform var(--t-underline);
+}
+.cs-client:hover::after, .cs-client:focus-visible::after { transform: scaleX(1); transform-origin: 0 0; }
+.cs-text, .cs-credits { font-size: calc(var(--fs-body) * var(--k)); line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+.cs-text + .cs-text { margin-top: 16px; }
+@media (min-width: 768px) {
+  .cs-intro { padding: var(--intro-pad-outer); }
+  .cs-intro__card { padding: var(--pad-y) var(--intro-pad-x-md); }
+  .cs-intro__cols { flex-direction: row; gap: var(--col-gap); }
+  .cs-intro__main { flex: 2 1 0; }
+  .cs-intro__side { flex: 1 1 0; }
+  .cs-lead { font-size: calc(var(--fs-lead-md) * var(--k)); }
+}
+@media (min-width: 1024px) {
+  .cs-intro__card { padding: var(--pad-y) var(--pad-x); }
+  .cs-lead { font-size: calc(var(--fs-lead) * var(--k)); }
+}
+
+/* 커튼: 투명 → 바탕색, 화면 높이 한 장 */
+.cs-curtain {
+  position: relative; z-index: 2;
+  height: 100vh; height: 100svh;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 0%, transparent), var(--bg));
+}
+
+/* ③ 이미지 판 */
+.cs-board {
+  position: relative; z-index: 2;
+  background: var(--bg); color: var(--ink);
+  padding: var(--gap) var(--gap) var(--board-pad-bottom);
+  display: flex; flex-direction: column; gap: var(--gap);
+}
+.cs-row { width: 100%; max-width: var(--board-max); margin: 0 auto; display: grid; gap: var(--gap); }
+.cs-tile { position: relative; border-radius: var(--r-tile); overflow: hidden; background: var(--note-bg); }
+.cs-tile img { width: 100%; height: 100%; object-fit: cover; }
+.cs-row--full .cs-tile { aspect-ratio: var(--ar-full); }
+.cs-row--pair .cs-tile { aspect-ratio: var(--ar-pair); }
+.cs-row--trio .cs-tile { aspect-ratio: var(--ar-wide); }
+.cs-row--trio .cs-tile--tall { aspect-ratio: var(--ar-pair); }
+.cs-note { display: flex; align-items: flex-start; padding: var(--note-pad-sm); color: var(--ink); }
+.cs-row--pair .cs-note { aspect-ratio: auto; }
+.cs-note__text { font-size: calc(var(--fs-body) * var(--k)); line-height: var(--lh-body); max-width: 36em; }
+@media (min-width: 768px) {
+  .cs-row--pair { grid-template-columns: 1fr 1fr; }
+  .cs-row--pair .cs-note { aspect-ratio: var(--ar-pair); }
+  .cs-row--trio { grid-template-columns: 1fr 1fr; }
+  .cs-row--trio .cs-tile--tall { grid-column: 2; grid-row: 1 / span 2; aspect-ratio: auto; }
+  .cs-row--trio .cs-tile:nth-child(3) { grid-column: 1; grid-row: 2; }
+}
+@media (min-width: 1024px) { .cs-note { padding: var(--note-pad); } }
+/* 사진이 한 장만 남은 두 장 줄 · 셋 줄은 전폭으로 */
+.cs-row--pair > :only-child, .cs-row--trio > :only-child { grid-column: 1 / -1; aspect-ratio: var(--ar-full); }
+.cs-row--pair > .cs-note:only-child { aspect-ratio: auto; }
+
+/* 떠오름: 줄이 화면 아래 15% 선을 넘으면 한 번 (sig.js 가 .is-in) */
+.m-on .cs-tile, .m-on .cs-related { opacity: 0; transform: translateY(var(--reveal-y)); transition: opacity var(--t-reveal) var(--ease-reveal), transform var(--t-reveal) var(--ease-reveal); }
+.m-on .cs-tile img { transform: scale(var(--reveal-s)); transition: transform var(--t-reveal) var(--ease-reveal); }
+.m-on .is-in, .m-on .is-in .cs-tile { opacity: 1; transform: none; }
+.m-on .is-in img, .m-on .is-in .cs-tile img { transform: none; }
+
+
+/* ④ 관련 작업 */
+.cs-related { width: 100%; max-width: var(--board-max); margin: 0 auto; border-radius: var(--r-tile); display: flex; flex-direction: column; }
+.cs-related__head {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: var(--related-pad-sm); margin-bottom: var(--gap);
+}
+.cs-related__title { margin: 0; font-size: var(--fs-related-h); line-height: 32px; font-weight: var(--w-regular); letter-spacing: 0; }
+.cs-home {
+  order: 3; align-self: stretch;
+  display: inline-flex; justify-content: center; align-items: center;
+  height: 44px; margin: var(--gap) 0 0;
+  border-radius: var(--r-button);
+  background: var(--point); color: var(--on-point);
+  font-family: var(--f-sans); font-size: var(--fs-button); font-weight: var(--w-semibold); letter-spacing: 0;
+  text-decoration: none;
+  transition: opacity .3s;
+}
+.cs-home:hover { opacity: .8; }
+.cs-related__head .cs-home { display: none; }
+.cs-related__list {
+  display: flex; gap: var(--gap); overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: var(--gap) 0; margin: 0 calc(var(--gap) * -1); padding-inline: var(--gap);
+  scrollbar-width: none;
+}
+.cs-related__list::-webkit-scrollbar { display: none; }
+.cs-card {
+  position: relative; flex: 0 0 var(--related-w-sm); height: var(--related-h-sm); min-height: 360px;
+  scroll-snap-align: center;
+  border-radius: var(--r-tile); overflow: hidden;
+  background: var(--c-tile-shade); color: var(--c-ink-inverse);
+  text-decoration: none;
+}
+.cs-card__clip {
+  position: absolute; inset: 0; z-index: 1;
+  clip-path: inset(0 0 var(--cap-h, 0px) 0 round var(--r-tile));
+  pointer-events: none; overflow: hidden;
+}
+.cs-card__clip img { width: 100%; height: 100%; object-fit: cover; }
+.cs-card__cap {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 16px 12px 12px;
+  font-size: var(--fs-tile-sm); line-height: 1;
+}
+.cs-card__tags { display: flex; flex-wrap: wrap; gap: 6px 10px; height: var(--tag-h); overflow: hidden; }
+.cs-card__tags li {
+  height: var(--tag-h); display: inline-flex; align-items: center; padding: var(--tag-pad);
+  border-radius: var(--r-tag); background: var(--c-chip-dark); color: var(--c-ink-inverse);
+  font-family: var(--f-sans); font-size: var(--fs-tag); font-weight: var(--w-semibold); line-height: 16px; letter-spacing: 0;
+}
+.cs-card__line { margin-top: 10px; }
+.cs-card__name { font-weight: var(--w-medium); }
+.cs-card__arrow { font-weight: var(--w-light); color: var(--c-caption-dim); }
+.cs-card__sub { color: var(--c-caption-dim); font-size: .9em; }
+.cs-card.no-img { height: auto; min-height: 0; aspect-ratio: auto; align-self: flex-start; }
+.cs-card.no-img .cs-card__cap { position: static; opacity: 1; transform: none; }
+@media (min-width: 768px) {
+  .cs-related__head { flex-direction: row; justify-content: space-between; align-items: center; padding: var(--related-pad); }
+  .cs-related__head .cs-home { display: inline-flex; order: 0; width: 160px; height: 56px; margin: 0; align-self: auto; }
+  .cs-related > .cs-home { display: none; }
+  .cs-related__list { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; margin: 0; padding-inline: 0; }
+  .cs-card { flex: none; height: auto; min-height: 0; aspect-ratio: var(--ar-related); }
+  .cs-card.no-img { aspect-ratio: auto; }
+  .cs-card__cap { font-size: var(--fs-tile-md); opacity: 0; transform: translateY(50%); }
+  .cs-card__clip { clip-path: inset(0 0 0 0 round var(--r-tile)); }
+  .cs-card__clip img { transition: transform var(--t-hover) var(--ease-hover); }
+  .cs-card__clip, .cs-card__cap { transition: clip-path var(--t-hover) var(--ease-hover), opacity var(--t-hover) var(--ease-hover), transform var(--t-hover) var(--ease-hover); }
+  .cs-card:hover .cs-card__clip, .cs-card:focus-visible .cs-card__clip { clip-path: inset(0 0 var(--cap-h, 0px) 0 round var(--r-tile)); }
+  .cs-card:hover .cs-card__clip img, .cs-card:focus-visible .cs-card__clip img { transform: scale(var(--hover-s)); }
+  .cs-card:hover .cs-card__cap, .cs-card:focus-visible .cs-card__cap, .cs-card.no-img .cs-card__cap { opacity: 1; transform: none; }
+  .m-0 .cs-card__cap { opacity: 1; transform: none; }
+  .m-0 .cs-card__clip { clip-path: inset(0 0 var(--cap-h, 0px) 0 round var(--r-tile)); }
+}
+@media (min-width: 1024px) { .cs-card__cap { font-size: var(--fs-tile-lg); } }
+@media (min-width: 1280px) { .cs-card__cap { font-size: var(--fs-tile); } }
+.cs-card:focus-visible, .cs-home:focus-visible, .cs-cta:focus-visible { outline: 2px solid var(--point-ink); outline-offset: 3px; }
+
+/* ⑤ 푸터 */
+.cs-footer { position: relative; z-index: 2; background: var(--c-stage); color: var(--c-ink-inverse); padding: var(--footer-pad); }
+.cs-cta {
+  display: inline-block; padding: var(--footer-cta-pad) 0;
+  font-family: var(--f-body); font-weight: var(--w-regular);
+  font-size: var(--cta-fs, var(--fs-cta)); line-height: 1; letter-spacing: -.035em;
+  text-decoration: none; white-space: nowrap;
+  transform-origin: 0 50%; transition: transform .3s;
+}
+.m-on .cs-cta:hover { transform: scale(1.05); }
+.cs-cta__b { font-family: var(--f-accent); font-style: italic; font-weight: var(--w-light); letter-spacing: -.02em; }
+.cs-cta__arrow { display: inline-block; margin-left: .12em; font-weight: var(--w-light); color: var(--point-on-stage, currentColor); }
+.cs-cta.is-wrap { white-space: normal; text-wrap: balance; max-width: 100%; }
+.cs-copy { font-size: var(--fs-body); line-height: var(--lh-body); }
+.cs-copy strong { font-weight: var(--w-semibold); }
+.note { position: relative; z-index: 2; margin: 0; padding: 0 30px 20px; background: var(--c-stage); color: var(--c-tag-ink); font-size: 12px; }
+
+/* 등장 (로드) — 돌아가기·제목: 투명·아래 40px → 제자리 */
+.m-on .cs-back, .m-on .cs-title__text { opacity: 0; transform: translateY(var(--enter-y)); transition: opacity var(--t-enter) var(--ease-enter), transform var(--t-enter) var(--ease-enter); }
+.m-on .cs-hero__img { opacity: 0; transition: opacity .6s linear; }
+.m-on.is-ready .cs-back, .m-on.is-ready .cs-title__text { opacity: 1; transform: none; }
+.m-on.is-ready .cs-back { transition-delay: var(--enter-delay); }
+.m-on.is-ready .cs-title__text { transition-delay: .6s; }
+.m-on.is-ready .cs-hero__img { opacity: 1; }
+.m-2.is-ready .cs-hero__img { animation: cs-settle 2.4s var(--ease-enter) both; }
+@keyframes cs-settle { from { transform: scale(1.08); } to { transform: none; } }
+
+/* 이미지 처리 */
+.i-native .cs-hero__img { filter: grayscale(1) contrast(1.08); }
+.i-mono img { filter: grayscale(1); }
+.i-tint img { filter: grayscale(1) contrast(1.05); }
+.i-tint .cs-tile, .i-tint .cs-card__clip, .i-tint .cs-hero__media { isolation: isolate; }
+.i-tint .cs-tile:not(.cs-note)::after, .i-tint .cs-card__clip::after, .i-tint .cs-hero__media::after {
+  content: ""; position: absolute; inset: 0; background: var(--tint); mix-blend-mode: multiply; pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* ── 6주 커스텀: GNB (학생 요청 — 상단 메뉴로 주차별 상세 페이지 이동) ── */
+.gnb { position: fixed; top: 0; left: 0; right: 0; z-index: 30; display: flex; align-items: center; justify-content: flex-end; gap: 28px; height: 64px; padding: 0 32px; color: #fff; mix-blend-mode: difference; font-family: var(--f-body); font-size: 14px; font-weight: 600; letter-spacing: -.2px; }
+.gnb a { color: inherit; text-decoration: none; white-space: nowrap; }
+.gnb a:hover, .gnb a[aria-current="page"] { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.gnb .gnb__home { margin-right: auto; }
+@media (max-width: 767px) { .gnb { gap: 14px; height: 52px; padding: 0 16px; font-size: 13px; } }
+
+/* ── 6주 커스텀: 카드 섹션 편집 스타일 (학생 요청 — 예시 이미지 비율 실측)
+   카드 폭 기준 비율 그리드: 26 | 10.5 | 2 | 35.5 | 26 (%) — 리드 26%부터, 메타 26–36.5% 오른쪽 정렬, 사진·본문 38.5–74%
+   글자 크기는 카드 폭(cqw)에 묶어 화면이 바뀌어도 밀도가 같다. 리드 3.9cqw / 행간 .96, 본문 1.32cqw / 행간 1.07
+   그리드 변형: ed--v1 예시 그대로 · ed--v2 리드·본문을 오른쪽으로 · ed--v3 리드를 가운데 넓게 */
+.cs-intro .cs-intro__card.ed {
+  container-type: inline-size;
+  display: grid; justify-content: stretch;
+  grid-template-columns: 26fr 10.5fr 2fr 35.5fr 26fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 0; padding: 14px 15px 16px;
+}
+.ed-quote { grid-column: 1; grid-row: 1; font-family: var(--f-body); font-size: max(28px, 3.4cqw); font-weight: 700; line-height: .8; letter-spacing: -.02em; }
+.cs-intro__card.ed .ed-lead {
+  grid-column: 2 / 6; grid-row: 1; margin: 0;
+  font-family: var(--f-body); font-size: 3.9cqw; font-weight: 700;
+  line-height: .96; letter-spacing: -.035em; text-indent: 6cqw; word-break: keep-all;
+}
+.ed-foot { grid-column: 1 / 6; grid-row: 3; display: grid; grid-template-columns: subgrid; align-items: start; padding-top: 6cqw; }
+.ed-index, .ed-meta { margin: 0; font-size: max(10px, .78cqw); font-weight: 500; line-height: 1.12; letter-spacing: -.01em; }
+.ed-index { grid-column: 1; }
+.ed-meta { grid-column: 2; padding: 0 0 0 0; list-style: none; text-align: right; }
+.ed-body { grid-column: 4; }
+.ed-fig { margin: 0 0 1.4cqw; width: 10.4cqw; aspect-ratio: 1; overflow: hidden; }
+.ed-fig img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); display: block; }
+.ed-text { margin: 0; font-size: max(12px, 1.32cqw); font-weight: 600; line-height: 1.07; letter-spacing: -.02em; word-break: keep-all; }
+.ed-text + .ed-text { margin-top: .5em; }
+.ed-text strong { font-weight: 700; }
+
+/* 변형 2 — 리드가 38.5%부터, 메타는 메타 칸, 사진·본문은 맨 오른쪽 26% */
+.cs-intro__card.ed--v2 .ed-lead { grid-column: 4 / 6; text-indent: 4cqw; }
+.ed--v2 .ed-body { grid-column: 5; }
+.ed--v2 .ed-meta { grid-column: 2 / 5; }
+/* 변형 3 — 리드가 26–74% 가운데 기둥, 본문은 26–74% 아래, 메타는 맨 오른쪽 26% 칸 */
+.cs-intro__card.ed--v3 .ed-lead { grid-column: 2 / 5; font-size: 4.3cqw; }
+.ed--v3 .ed-meta { grid-column: 5; grid-row: 1; text-align: right; }
+.ed--v3 .ed-foot { grid-template-columns: subgrid; }
+.ed--v3 .ed-body { grid-column: 2 / 4; }
+.ed--v3 .ed-fig { width: 14cqw; }
+
+@media (max-width: 767px) {
+  .cs-intro .cs-intro__card.ed { grid-template-columns: 1fr 1fr; padding: 12px 12px 14px; }
+  .ed-quote { grid-column: 1 / -1; font-size: 32px; margin-bottom: 10px; }
+  .cs-intro__card.ed .ed-lead, .cs-intro__card.ed--v2 .ed-lead, .cs-intro__card.ed--v3 .ed-lead { grid-column: 1 / -1; grid-row: 2; font-size: 8cqw; text-indent: 12cqw; }
+  .ed-foot, .ed--v3 .ed-foot { grid-column: 1 / -1; grid-row: 4; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 0; }
+  .ed-index, .ed--v2 .ed-index { grid-column: 1; }
+  .ed-meta, .ed--v2 .ed-meta, .ed--v3 .ed-meta { grid-column: 2; grid-row: auto; font-size: 11px; }
+  .ed-body, .ed--v2 .ed-body, .ed--v3 .ed-body { grid-column: 1 / -1; }
+  .ed-fig, .ed--v3 .ed-fig { width: 30cqw; margin-bottom: 10px; }
+  .ed-text { font-size: 13px; }
+}
+/* 예시처럼 — 왼쪽 칸 위에 번호, 맨 아래에 밑줄 링크 · 아래 줄이 카드 바닥까지 */
+.ed-side { grid-column: 1; align-self: stretch; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+.ed-more { font-size: max(12px, 1.3cqw); font-weight: 600; color: inherit; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.ed-text { max-width: 33cqw; }
+@media (max-width: 767px) { .ed-side { grid-column: 1; } .ed-more { order: 3; } .ed-text { max-width: none; } }
+
+/* ── 6주 커스텀: 사진 판을 콜라주로 (학생 요청 — 예시 이미지: 회색 종이 위 흩어진 사진 + 번호·대문자 캡션) ──
+   사진은 8칸 순환 자리(cl-s1~8)에 놓이고, 음수 위 여백으로 앞 사진과 살짝 겹친다. 글 카드 뒤에는 순환을 처음부터 다시 시작한다.
+   여백·겹침은 판 폭 대비 %라 화면이 바뀌어도 같은 구도. */
+.cs-curtain { background: linear-gradient(to bottom, transparent, var(--my-board, #E6E5E1)); }
+.cs-board.cl {
+  background-color: var(--my-board, #E6E5E1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  color: #2A2A2A; gap: 0; padding: 4vw 0 var(--board-pad-bottom);
+}
+.cl-chapter { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 4vw 8vw; }
+.cl-head { margin: 0 0 4%; text-align: right; font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.cs-board.cl .cl-item { display: block; position: relative; width: 23%; max-width: none; margin: 0; }
+.cl-img { border-radius: 0; background: #CFCFCB; aspect-ratio: 3 / 4; }
+.cl-cap { display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; font-size: 12px; font-weight: 400; line-height: 1.3; letter-spacing: .04em; text-transform: uppercase; color: #2A2A2A; }
+.cl-label { text-align: right; }
+/* 8칸 순환 — 1~4 예시 그대로(왼쪽 위 세로 · 가운데 가로 겹침 · 오른쪽 세로 · 가운데 아래 정사각), 5~8은 좌우를 뒤집음 */
+.cs-board.cl .cl-s1 { width: 23%; margin-left: 8%;  margin-top: 4%; }
+.cs-board.cl .cl-s2 { width: 32%; margin-left: 26%; margin-top: -14%; }  .cl-s2 .cl-img { aspect-ratio: 4 / 3; }
+.cs-board.cl .cl-s3 { width: 23%; margin-left: 69%; margin-top: -18%; }
+.cs-board.cl .cl-s4 { width: 23%; margin-left: 37%; margin-top: -14%; }  .cl-s4 .cl-img { aspect-ratio: 1 / 1; }
+.cs-board.cl .cl-s5 { width: 23%; margin-left: 69%; margin-top: 8%; }
+.cs-board.cl .cl-s6 { width: 32%; margin-left: 42%; margin-top: -14%; }  .cl-s6 .cl-img { aspect-ratio: 4 / 3; }
+.cs-board.cl .cl-s7 { width: 23%; margin-left: 8%;  margin-top: -18%; }
+.cs-board.cl .cl-s8 { width: 23%; margin-left: 40%; margin-top: -14%; }  .cl-s8 .cl-img { aspect-ratio: 1 / 1; }
+/* 글 카드 — 캡션과 같은 작은 글자로, 왼쪽/오른쪽 번갈아 */
+.cs-board.cl .cl-text { width: 30%; margin-top: 7%; }
+.cs-board.cl .cl-text--l { margin-left: 8%; }
+.cs-board.cl .cl-text--r { margin-left: 62%; }
+.cl-textbox { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.35; letter-spacing: -.01em; word-break: keep-all; }
+.cl-textbox a { color: inherit; }
+.cs-board.cl .cs-related { margin-top: 4vw; }
+@media (max-width: 767px) {
+  .cl-chapter { padding: 0 16px 64px; }
+  .cs-board.cl .cl-item, .cs-board.cl [class*="cl-s"] { width: 64%; margin-top: 40px; }
+  .cs-board.cl .cl-s2, .cs-board.cl .cl-s4, .cs-board.cl .cl-s6, .cs-board.cl .cl-s8 { margin-left: 36%; margin-top: -12%; }
+  .cs-board.cl .cl-s1, .cs-board.cl .cl-s3, .cs-board.cl .cl-s5, .cs-board.cl .cl-s7 { margin-left: 0; }
+  .cs-board.cl .cl-text { width: 86%; margin-left: 0; }
+  .cl-cap { font-size: 11px; }
+}
+
+/* ── 6주 커스텀: 사진 뒤 큰 타이틀 고정 + 스크롤에 따라 바뀜 (학생 요청 — SKY → HAND → ROAD) ──
+   장마다 화면 높이짜리 고정 층을 사진 뒤(z 0)에 깔고, 사진·글(z 1)이 그 위로 지나간다. 글자는 collage.js 가 바꾼다. */
+.cl-chapter { position: relative; isolation: isolate; }
+.cl-sticky {
+  position: sticky; top: 0; z-index: 0;
+  height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; overflow: hidden;
+}
+.cl-big {
+  font-family: var(--f-body); font-size: clamp(96px, 21vw, 340px); font-weight: 500;
+  line-height: .9; letter-spacing: -.04em; color: #2A2A2A; white-space: nowrap;
+  transition: opacity .35s ease, transform .35s ease;
+}
+.cl-big.is-swap { opacity: 0; transform: translateY(.08em); }
+.cs-board.cl .cl-item, .cl-head { z-index: 1; }
+.cl-head { position: relative; }
+@media (max-width: 767px) { .cl-big { font-size: 26vw; } }
+
+/* ── 6주 커스텀: 사진 판 검정 바탕 + 흰 글자 (학생 요청) — 바탕은 my-style.css --my-board, 글자는 --my-board-ink ── */
+.cs-board.cl { --board-ink: var(--my-board-ink, #F2F2F0); color: var(--board-ink); background-blend-mode: screen; }
+.cs-board.cl .cl-cap, .cs-board.cl .cl-big, .cs-board.cl .cl-head, .cs-board.cl .cl-textbox, .cs-board.cl .cs-related__title { color: var(--board-ink); }
+.cs-board.cl .cl-img { background: #2A2A2A; }
+.cs-board.cl .cs-home { background: var(--board-ink); color: #111111; }
+
+/* ── 6주 커스텀: '세 장' 섹션 카드 (학생 요청 — 예시: 옅은 회색 면 · 알약 칩 · 큰 명조 제목 · 가운데 본문 · 손그림 선 일러스트) ── */
+.cs-related__list.sc-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; overflow: visible; margin: 0; padding: 10px 0; scroll-snap-type: none; }
+.sc-card {
+  container-type: inline-size;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  aspect-ratio: 3 / 4; padding: 13cqw 7cqw 0; overflow: hidden;
+  background: #F4F4F2; color: #111; text-decoration: none;
+}
+.sc-chip { display: inline-block; padding: .55em 1.2em; border: 1px solid #DEDEDC; border-radius: 999px; background: #EFEFED; font-family: var(--f-sans); font-size: max(12px, 3.6cqw); font-weight: 600; letter-spacing: -.01em; line-height: 1; }
+.sc-title { margin: 8cqw 0 0; font-family: "Noto Serif KR", "Newsreader", serif; font-size: 17cqw; font-weight: 500; line-height: .95; letter-spacing: -.03em; }
+.sc-body { margin: 6cqw 0 0; max-width: 24em; font-family: var(--f-sans); font-size: max(13px, 4.1cqw); font-weight: 400; line-height: 1.42; letter-spacing: .005em; word-break: keep-all; }
+.sc-ill { width: 78%; margin-top: auto; display: block; transition: transform .5s cubic-bezier(.165,.84,.44,1); }
+.sc-card:hover .sc-ill { transform: translateY(-4%); }
+.sc-card:focus-visible { outline: 2px solid var(--board-ink, #fff); outline-offset: 3px; }
+@media (max-width: 767px) {
+  .cs-related__list.sc-list { grid-template-columns: 1fr; }
+  .sc-card { aspect-ratio: 4 / 5; }
+}
+/* 큰 타이틀 — 장 끝에서 사라짐 (collage.js 가 .is-out) */
+.cl-sticky { transition: opacity .4s ease; }
+.cl-sticky.is-out { opacity: 0; }
+/* '세 장' 카드 아래 여백을 넓힘 (학생 요청 · 원래 20px) */
+.cs-board.cl { padding-bottom: clamp(96px, 11vw, 190px); }
+
+/* ── 6주 커스텀: 큰 타이틀을 사진 '뒤'에서 사진 '위 + 반전'으로 (학생 요청 — 참고: oddlymade.webflow.io 의 고정 문장)
+   참고 사이트 실측: 고정 층이 사진보다 위(z 100) · 흰 글자 · mix-blend-mode: exclusion → 글자가 사진과 겹친 부분만 색이 뒤집혀 엑스레이처럼 보인다.
+   여기서는 검정 바탕이라 빈 곳에서는 흰 글자, 사진 위에서는 사진 색이 반전된 글자가 된다. */
+.cl-chapter { isolation: auto; }
+.cs-board.cl .cl-sticky { z-index: 3; mix-blend-mode: exclusion; }
+.cs-board.cl .cl-big { color: #FFFFFF; }
+
+/* ── 6주 커스텀: 사진 판 흰 바탕 + 큰 타이틀 얇은 세리프 (학생 요청) ──
+   큰 타이틀은 흰 글자 + exclusion 그대로 — 흰 바탕에서는 검정으로 보이고 사진 위에서만 반전된다. */
+.cs-board.cl .cl-img { background: color-mix(in srgb, var(--my-board, #111111) 86%, var(--board-ink, #F2F2F0)); }  /* 사진이 뜨기 전 칸 색 — 바탕보다 살짝 다른 톤 */
+.cs-board.cl .cs-home { background: var(--board-ink); color: var(--my-board, #FFFFFF); }
+/* 다시 산세리프 + 크기 줄임 (학생 요청 · 이전: 세리프 Newsreader 300 / 크기 clamp(96px, 21vw, 340px)) */
+.cs-board.cl .cl-big { font-family: var(--f-body); font-weight: 300; letter-spacing: -.04em; font-size: clamp(64px, 14vw, 220px); }
+@media (max-width: 767px) { .cs-board.cl .cl-big { font-size: 18vw; } }
+
+/* ── 6주 커스텀: 묶음(SKY·HAND·ROAD / LAKE·LIBRARY·SUBWAY) 사이 간격을 띄움 (학생 요청) — 새 묶음의 첫 칸 위 여백 ── */
+.cs-board.cl .cl-item.cl-group-start { margin-top: 20%; }
+@media (max-width: 767px) { .cs-board.cl .cl-item.cl-group-start { margin-top: 30%; } }
+
+/* ── 6주 커스텀: 사진 사이 간격을 띄움 (학생 요청) — 겹쳐 있는 짝(1·2번, 5·6번)의 겹침은 그대로, 나머지 칸의 위 여백만 넓힘 ──
+   이전 값: s1 4% · s3 -18% · s4 -14% · s5 8% · s7 -18% · s8 -14% (s2·s6 은 -14% 그대로) */
+@media (min-width: 768px) {
+  .cs-board.cl .cl-s1 { margin-top: 10%; }
+  .cs-board.cl .cl-s3 { margin-top: -10%; }
+  .cs-board.cl .cl-s4 { margin-top: -6%; }
+  .cs-board.cl .cl-s5 { margin-top: 14%; }
+  .cs-board.cl .cl-s7 { margin-top: -10%; }
+  .cs-board.cl .cl-s8 { margin-top: -6%; }
+}
+@media (max-width: 767px) {
+  .cs-board.cl .cl-s1, .cs-board.cl .cl-s3, .cs-board.cl .cl-s5, .cs-board.cl .cl-s7 { margin-top: 72px; }
+}
+/* 묶음 첫 칸 간격은 위 규칙보다 뒤에 다시 적어 유지 */
+.cs-board.cl .cl-item.cl-group-start { margin-top: 20%; }
+@media (max-width: 767px) { .cs-board.cl .cl-item.cl-group-start { margin-top: 30%; } }
+
+/* ── 6주 커스텀: 첫 화면 커서 이미지 트레일 (학생 요청 — 참고 jingjinghan.com) · 동작은 hero-trail.js ──
+   대표 사진(뒤) < 트레일 사진 < 제목(앞). 사진 크기는 참고 사이트 비율(245:170). */
+.ht-layer { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+/* 자르지 않고 사진 원래 비율 그대로 (학생 요청) — 가로 사진은 폭, 세로 사진은 높이 상한에 맞춰 줄어든다 · 이전: 폭 18vw 고정 + 245:170 으로 자름 */
+.ht-img { position: absolute; left: 0; top: 0; width: auto; height: auto; max-width: clamp(160px, 20vw, 320px); max-height: clamp(160px, 20vw, 320px); opacity: 0; transform: translate(-50%, -50%); will-change: transform, opacity; }
+
+/* ── 6주 커스텀: 아카이브(index) 첫 화면 — 흰 바탕 위 사진 구, 끌어서 돌리기 (학생 요청 · 참고 gionatannese.com) · 동작은 sphere.js ──
+   스크롤은 가로채지 않는다(휴대폰에서도 세로 밀기는 스크롤). 제목은 흰 글자 + difference 라 흰 바탕에서는 검정, 사진 위에서는 반전. */
+.cs-hero--sphere { background: #FFFFFF; }
+.sp-stage { position: absolute; inset: 0; z-index: 1; overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.sp-stage.is-drag { cursor: grabbing; }
+.sp-item { position: absolute; left: 0; top: 0; width: clamp(40px, 4.8vw, 82px); will-change: transform, opacity; }  /* 이전 clamp(54px, 6.6vw, 112px) */
+.sp-item img { display: block; width: 100%; height: auto; pointer-events: none; -webkit-user-drag: none; }
+.cs-hero--sphere .cs-title { pointer-events: none; mix-blend-mode: difference; }
+/* 아카이브 첫 화면은 고정하지 않음 (학생 요청) — 아래 카드가 덮으며 올라오지 않고, 첫 화면이 그대로 위로 스크롤되어 사라진다 */
+.cs-hero.cs-hero--sphere { position: relative; top: auto; }
+
+/* ── 6주 커스텀: 아카이브 두 번째 화면 (학생 요청 · 참고 julienpianetti.com 첫 화면) · 동작은 jp.js ──
+   참고 실측(1024 폭): 흰 바탕 · 소개 문단 왼쪽 34% 지점에서 시작, 폭 56%, 32px/행간 1.0/굵기 500/자간 -0.56px, 4줄
+   · 왼쪽 아래 큰 제목 두 줄(글자 높이 약 140px) · 오른쪽 아래 작은 영상(198×111) */
+.jp {
+  position: relative; z-index: 1; min-height: 100vh; min-height: 100svh;
+  display: grid; grid-template-rows: auto 1fr auto;
+  padding: 120px 12px 16px; background: #FFFFFF; color: #0C0C0C;
+}
+.jp-lead { grid-row: 1; margin: 0 0 0 34%; width: min(56%, 820px); font-size: clamp(20px, 3.13vw, 48px); font-weight: 500; line-height: 1.04; letter-spacing: -.02em; word-break: keep-all; }
+.jp-foot { grid-row: 3; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.jp-title { display: flex; flex-direction: column; color: inherit; text-decoration: none; font-family: var(--f-sans); font-size: clamp(56px, 13.6vw, 230px); font-weight: 600; line-height: .9; letter-spacing: -.055em; cursor: none; }
+.jp-line { display: block; white-space: nowrap; }
+.jp-ch { display: inline-block; transform-origin: 50% 100%; transition: transform .45s cubic-bezier(.165,.84,.44,1), filter .45s ease, opacity .45s ease; }
+.js .jp-ch:not(.is-in) { transform: scaleY(.2) skewX(-18deg); filter: blur(6px); opacity: .35; }
+.jp-ch.v-serif { font-family: "Noto Serif KR", serif; font-weight: 900; letter-spacing: -.08em; }
+.jp-ch.v-mono  { font-family: "Nanum Gothic Coding", monospace; font-weight: 700; letter-spacing: -.06em; }
+.jp-ch.v-hand  { font-family: "Gaegu", sans-serif; font-weight: 700; }
+.jp-ch.v-thin  { font-weight: 100; }
+.jp-thumb { flex: none; width: clamp(140px, 19.4vw, 300px); aspect-ratio: 198 / 111; overflow: hidden; background: #EEE; margin-bottom: .6vw; }
+.jp-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.jp-cursor { position: fixed; left: 0; top: 0; z-index: 50; width: 88px; height: 88px; border-radius: 50%; background: #FFFFFF; border: 1px solid #0C0C0C; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; scale: .4; transition: opacity .25s ease, scale .35s cubic-bezier(.165,.84,.44,1); }
+.jp-cursor span { font-size: 13px; font-weight: 500; color: #0C0C0C; }
+.jp-cursor.is-on { opacity: 1; scale: 1; }
+/* 흰 두 번째 화면에서 검정 사진 판으로 이어지는 안개 */
+.jp + .cs-curtain { background: linear-gradient(to bottom, #FFFFFF, var(--my-board, #111111)); }
+@media (max-width: 767px) {
+  .jp { padding: 88px 16px 16px; }
+  .jp-lead { margin-left: 0; width: 100%; font-size: 22px; }
+  .jp-foot { flex-direction: column; align-items: flex-start; }
+  .jp-title { font-size: 20vw; cursor: pointer; }
+  .jp-thumb { align-self: flex-end; width: 46vw; }
+}
+
+/* ── 6주 커스텀: 두 번째 화면 수정 (학생 요청) — 작은 사진 화면 키움 · 제목 호버는 명조로만 · 바뀔 때 부드럽게 ──
+   글자마다 고딕(.jp-a, 자리 차지)과 명조(.jp-b, 같은 자리에 겹침) 두 겹을 두고, 호버하면 0.6초 동안 서로 흐려지며 바뀐다. */
+.jp-thumb { width: clamp(220px, 30vw, 480px); }   /* 이전 clamp(140px, 19.4vw, 300px) */
+.jp-ch { position: relative; }
+.jp-a, .jp-b { display: inline-block; transition: opacity .6s cubic-bezier(.4,0,.2,1), filter .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1); }
+.jp-b { position: absolute; left: 50%; bottom: 0; transform: translate(-50%, .04em) scale(.96); opacity: 0; filter: blur(6px);
+  font-family: "Noto Serif KR", "Newsreader", serif; font-weight: 500; letter-spacing: -.04em; }
+.jp-ch.is-serif .jp-a { opacity: 0; filter: blur(6px); transform: scale(1.03); }
+.jp-ch.is-serif .jp-b { opacity: 1; filter: blur(0); transform: translate(-50%, 0) scale(1); }
+@media (max-width: 767px) { .jp-thumb { width: 64vw; } }
+
+/* ── 6주 커스텀: 두 번째 화면 수정 (학생 요청) — 작은 사진 살짝 줄임 · 호버 서체 변경 뺌 · 유리 원 커서 ──
+   유리 원: 반투명 흰 면 + 뒤를 흐리게(backdrop-filter) + 가장자리 빛 · 안에는 제목 복제본을 1.3배로 키워 넣어 글씨가 굴절되어 비친다(jp.js) */
+.jp-thumb { width: clamp(200px, 27vw, 430px); }   /* 이전 30vw · 480px */
+.jp-ch.is-serif .jp-a { opacity: 1; filter: none; transform: none; }
+.jp-ch.is-serif .jp-b { opacity: 0; }
+.jp-title { cursor: none; }
+.jp-glass {
+  position: fixed; left: 0; top: 0; z-index: 50; width: 132px; height: 132px; border-radius: 50%;
+  pointer-events: none; overflow: hidden; opacity: 0; scale: .5;
+  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.55), rgba(255,255,255,.12) 42%, rgba(255,255,255,.06) 70%, rgba(255,255,255,.22));
+  -webkit-backdrop-filter: blur(5px) saturate(170%) brightness(1.06); backdrop-filter: blur(5px) saturate(170%) brightness(1.06);
+  border: 1px solid rgba(255,255,255,.75);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.9), inset 0 -10px 18px rgba(0,0,0,.08), inset 6px 0 14px rgba(255,255,255,.35), 0 10px 30px rgba(0,0,0,.14);
+  transition: opacity .3s ease, scale .45s cubic-bezier(.165,.84,.44,1);
+}
+.jp-glass.is-on { opacity: 1; scale: 1; }
+.jp-glass__in { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; }
+.jp-glass__text { position: absolute; margin: 0; color: rgba(12,12,12,.82); pointer-events: none;
+  filter: blur(.3px); text-shadow: -1.5px 0 0 rgba(255,60,90,.28), 1.5px 0 0 rgba(40,120,255,.28); }
+.jp-glass__text .jp-ch { transition: none; }
+.jp-glass::after { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  background: linear-gradient(140deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 72%, rgba(255,255,255,.28) 100%); }
+@media (max-width: 767px) { .jp-thumb { width: 60vw; } }
+/* 유리 원: 지름 116px(이전 132px) · 두 번째 화면 안에서는 작은 점(약 36px)으로 따라다니고, 글자 위에서 커짐 (학생 요청) */
+.jp-glass { width: 116px; height: 116px; transition: opacity .3s ease, scale .55s cubic-bezier(.22,1,.36,1); }
+.jp-glass.is-on { opacity: 1; scale: .31; }
+.jp-glass.is-on.is-big { scale: 1; }
+.jp.has-glass, .jp.has-glass .jp-title { cursor: none; }
+/* 유리 원 움직임 매끄럽게 — 복제 글씨는 transform 으로만 옮김(jp.js), 위치 전환 효과는 없음 */
+.jp-glass { will-change: transform; }
+.jp-glass__text { left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.jp-glass { box-sizing: border-box; }   /* 테두리 1px 까지 116px 안에 — 원 가운데가 마우스 끝과 정확히 맞도록 */
+
+/* ── 6주 커스텀: 유리 원 위치 어긋남 수정 (학생 지적) ──
+   원인: .jp-glass 에 scale(작게 .31)과 transform(마우스 자리로 이동)을 함께 줘서, 작아질 때 이동 거리도 31%로 줄어 원이 마우스와 멀리 떨어졌다.
+   수정: 겉 .jp-glass 는 자리만(transform), 속 .jp-glass__body 가 유리 모양·투명도·크기 변화를 맡는다. */
+.jp-glass { scale: none !important; opacity: 1 !important; background: none; border: 0; box-shadow: none; overflow: visible;
+  -webkit-backdrop-filter: none; backdrop-filter: none; transition: none; }
+.jp-glass::after { content: none; }
+.jp-glass__body {
+  position: absolute; inset: 0; border-radius: 50%; overflow: hidden; box-sizing: border-box;
+  opacity: 0; scale: .5;
+  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.55), rgba(255,255,255,.12) 42%, rgba(255,255,255,.06) 70%, rgba(255,255,255,.22));
+  -webkit-backdrop-filter: blur(5px) saturate(170%) brightness(1.06); backdrop-filter: blur(5px) saturate(170%) brightness(1.06);
+  border: 1px solid rgba(255,255,255,.75);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.9), inset 0 -10px 18px rgba(0,0,0,.08), inset 6px 0 14px rgba(255,255,255,.35), 0 10px 30px rgba(0,0,0,.14);
+  transition: opacity .3s ease, scale .55s cubic-bezier(.22,1,.36,1);
+}
+.jp-glass__body::after { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  background: linear-gradient(140deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 72%, rgba(255,255,255,.28) 100%); }
+.jp-glass.is-on .jp-glass__body { opacity: 1; scale: .31; }
+.jp-glass.is-on.is-big .jp-glass__body { scale: 1; }
+.jp-thumb { width: clamp(180px, 23vw, 370px); }   /* 조금 줄임 (학생 요청 · 이전 27vw · 430px) */
+@media (max-width: 767px) { .jp-thumb { width: 52vw; } }
+
+/* ── 6주 커스텀: 첫 화면 → 두 번째 화면 스크롤 연출 (학생 요청) · 동작은 jp.js 6번 ──
+   .jp 는 겉 상자(높이 230svh), .jp-pin 이 화면에 붙는 안쪽 무대(100svh). 소개 문단이 먼저 올라와 위쪽에 고정되고,
+   그다음 스크롤만큼 큰 제목·작은 사진(.jp-foot)이 아래에서 올라온다. */
+.jp { display: block; padding: 0; }
+.jp-pin { min-height: 100vh; min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; padding: 120px 12px 16px; box-sizing: border-box; }
+.jp.is-scrolly { height: 230vh; height: 230svh; }
+.jp.is-scrolly .jp-pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.jp-foot, .jp-lead { will-change: transform; }
+@media (max-width: 767px) { .jp { padding: 0; } .jp-pin { padding: 88px 16px 16px; } }
+/* 소개 문단이 멈추는 자리를 조금 위로 (학생 요청 · 위 여백 120px → 84px, 휴대폰 88px → 68px) */
+.jp-pin { padding-top: 84px; }
+@media (max-width: 767px) { .jp-pin { padding-top: 68px; } }
+/* 작은 사진 — 오른쪽 벽과 바닥에서 같은 간격 32px (학생 요청 · 이전 오른쪽 12px · 바닥 약 24px)
+   무대 안쪽 여백(오른쪽 12px · 아래 16px)에 사진 바깥 여백을 더해 둘 다 32px */
+.jp-thumb { margin: 0 20px 16px 0; }
+@media (max-width: 767px) { .jp-thumb { margin: 0 16px 16px 0; } }
+/* 작은 사진 간격을 큰 제목이 왼쪽 벽·바닥에서 떨어진 만큼으로 (학생 요청 · 32px → 16px, 오른쪽·아래 같게) */
+.jp-thumb { margin: 0 4px 0 0; }
+@media (max-width: 767px) { .jp-thumb { margin: 0; } }
+
+/* ── 6주 커스텀: 시선 장 '뷰파인더' (학생 요청) · 동작은 viewfinder.js ──
+   사진 위에 흐림·흑백 막(.vf-veil)을 한 장 깔고, 마우스 자리에 3:2 창 모양 구멍을 뚫어 그 안만 선명하게.
+   큰 반전 타이틀(SKY·HAND·ROAD, z 3)은 막(z 2) 위에 그대로 있다. */
+.cl-chapter.vf { cursor: none; }
+.vf-veil {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  -webkit-backdrop-filter: blur(9px) grayscale(1) brightness(.72); backdrop-filter: blur(9px) grayscale(1) brightness(.72);
+  -webkit-mask: linear-gradient(#000 0 0) 0 0 / 100% 100% no-repeat, linear-gradient(#000 0 0) var(--vx, -9999px) var(--vy, -9999px) / var(--vw, 0) var(--vh, 0) no-repeat;
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) 0 0 / 100% 100% no-repeat exclude, linear-gradient(#000 0 0) var(--vx, -9999px) var(--vy, -9999px) / var(--vw, 0) var(--vh, 0) no-repeat;
+}
+.vf-frame {
+  position: fixed; left: 0; top: 0; z-index: 40; pointer-events: none; opacity: 0; transition: opacity .25s ease;
+  --c: rgba(255,255,255,.95); --l: 22px; --t: 1.5px;
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / var(--l) var(--t), linear-gradient(var(--c), var(--c)) 0 0 / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) 100% 0 / var(--l) var(--t), linear-gradient(var(--c), var(--c)) 100% 0 / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) 0 100% / var(--l) var(--t), linear-gradient(var(--c), var(--c)) 0 100% / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) 100% 100% / var(--l) var(--t), linear-gradient(var(--c), var(--c)) 100% 100% / var(--t) var(--l);
+  background-repeat: no-repeat;
+  mix-blend-mode: difference;
+}
+.vf-frame.is-on { opacity: 1; }
+.vf-label { position: absolute; left: 10px; top: 9px; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #fff; white-space: nowrap; }
+.vf-cross { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; translate: -50% -50%;
+  background: linear-gradient(#fff, #fff) 50% 0 / 1px 100% no-repeat, linear-gradient(#fff, #fff) 0 50% / 100% 1px no-repeat; opacity: .8; }
+.vf-flash { position: fixed; inset: 0; z-index: 60; background: #fff; pointer-events: none; opacity: 0; }
+.vf-flash.is-on { animation: vf-flash .45s ease-out; }
+@keyframes vf-flash { 0% { opacity: .95; } 100% { opacity: 0; } }
+.vf-box { position: fixed; inset: 0; z-index: 55; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: rgba(10,10,10,.94); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; cursor: zoom-out; }
+.vf-box.is-open { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+.vf-box img { max-width: 86vw; max-height: 80vh; object-fit: contain; display: block; }
+.vf-box__cap { margin: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #F2F2F0; }
+.vf-box__close { position: absolute; top: 18px; right: 22px; border: 0; background: none; color: #F2F2F0; font-size: 28px; line-height: 1; cursor: pointer; }
+
+/* ── 6주 커스텀: 아카이브(index)만 — 두 번째 화면 아래 사진 판을 흰 바탕·검정 글자로 (학생 요청) ──
+   <body class="pg-archive"> 에만 적용. 시선·사람·공간 페이지(week04~06)는 my-style.css 값(검정 바탕) 그대로. */
+.pg-archive { --my-board: #FFFFFF; --my-board-ink: #111111; }
+/* 아카이브(흰 바탕)의 뷰파인더 흐림 — 어둡게 가라앉히지 않고 밝게 바래도록 (학생 요청 · 이전: 흐림 9px · 흑백 · 밝기 .72)
+   흐림 + 흑백 + 밝기 1.12 + 대비 .82 에 옅은 흰 안개를 한 겹 더해 종이 위 바랜 사진처럼. 창 귀퉁이 표시는 흰 바탕에서 보이게 검정. */
+.pg-archive .vf-veil {
+  -webkit-backdrop-filter: blur(9px) grayscale(1) brightness(1.12) contrast(.82); backdrop-filter: blur(9px) grayscale(1) brightness(1.12) contrast(.82);
+  background: rgba(255,255,255,.28);
+}
+.pg-archive .vf-frame { --c: #111111; mix-blend-mode: normal; }
+.pg-archive .vf-label { color: #111111; }
+.pg-archive .vf-cross { background: linear-gradient(#111, #111) 50% 0 / 1px 100% no-repeat, linear-gradient(#111, #111) 0 50% / 100% 1px no-repeat; }
+
+/* ── 6주 커스텀: 뷰파인더를 SKY 구간에만 + 경계선 없게 (학생 요청) ──
+   막(.vf-veil)은 SKY 칸들의 위아래 끝(+140px)만 덮는 띠(viewfinder.js 가 top/height 를 잰다).
+   띠 위아래 140px 는 서서히 사라지게(feather), 흰 바탕을 회색으로 만들던 대비 낮춤(contrast .82)은 뺌 → 빈 흰 바탕은 막 안팎이 똑같은 흰색. */
+.cl-chapter.vf { cursor: auto; }
+.cl-chapter.vf.vf-in { cursor: none; }
+.vf-veil { inset: auto 0 auto 0; }
+.pg-archive .vf-veil {
+  -webkit-backdrop-filter: blur(9px) grayscale(1) brightness(1.1); backdrop-filter: blur(9px) grayscale(1) brightness(1.1);
+  background: rgba(255,255,255,.3);
+  -webkit-mask:
+    linear-gradient(to bottom, transparent 0, #000 var(--feather, 140px), #000 calc(100% - var(--feather, 140px)), transparent 100%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(#000 0 0) var(--vx, -9999px) var(--vy, -9999px) / var(--vw, 0) var(--vh, 0) no-repeat;
+  -webkit-mask-composite: source-out;
+  mask:
+    linear-gradient(to bottom, transparent 0, #000 var(--feather, 140px), #000 calc(100% - var(--feather, 140px)), transparent 100%) 0 0 / 100% 100% no-repeat subtract,
+    linear-gradient(#000 0 0) var(--vx, -9999px) var(--vy, -9999px) / var(--vw, 0) var(--vh, 0) no-repeat;
+}
+
+/* ── 6주 커스텀: 아카이브 공간 장 — 회전 사진 휠 (학생 요청 · 참고 nickho-motorsports.nl 갤러리) · 동작은 space-wheel.js ── */
+.cl-chapter.sw { max-width: none; padding: 0 0 4vw; }
+.cl-chapter.sw .cl-head { padding: 0 4vw; }
+.sw-stage { position: relative; height: 100vh; height: 100svh; min-height: 640px; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab; outline: none; }
+.sw-stage.is-drag { cursor: grabbing; }
+/* 아주 옅은 큰 배경 글자 — 폭에 맞춰 크기 조정, 아래로 갈수록 사라짐 */
+.sw-bg { position: absolute; inset: 0; display: flex; justify-content: center; align-items: flex-start; pointer-events: none;
+  -webkit-mask: linear-gradient(to bottom, #000 35%, transparent 82%); mask: linear-gradient(to bottom, #000 35%, transparent 82%); }
+.sw-word { font-family: "Anton", "Pretendard Variable", sans-serif; font-weight: 400; line-height: .86; letter-spacing: -.01em; color: #F1F1F0; white-space: nowrap; margin-top: -1vw; }
+.pg-archive .sw-word { color: #F1F1F0; }
+.sw-stage.is-swap .sw-word { animation: sw-word .6s cubic-bezier(.22,1,.36,1); }
+@keyframes sw-word { from { opacity: 0; transform: translateY(4%); } to { opacity: 1; transform: none; } }
+/* 공간 버튼 */
+.sw-tabs { position: absolute; z-index: 5; top: 28px; left: 50%; translate: -50% 0; display: flex; gap: 8px; }
+.sw-tab { border: 0; padding: 12px 18px; background: #EFEFEE; color: #111; font: 600 12px/1 var(--f-sans); letter-spacing: .08em; cursor: pointer; transition: background .25s, color .25s; }
+.sw-tab:hover { background: #E2E2E0; }
+.sw-tab.is-on { background: #111; color: #FFF; }
+/* 가는 선 — 원 호와 바큇살 */
+.sw-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.sw-arc { fill: none; stroke: #E6E6E4; stroke-width: 1; }
+.sw-spoke { stroke: #E6E6E4; stroke-width: 1; }
+/* 사진 */
+.sw-wheel { position: absolute; inset: 0; }
+.sw-item { position: absolute; left: 0; top: 0; margin: 0; aspect-ratio: 1 / 1; display: none; will-change: transform; transform-origin: 50% 50%; }
+.sw-item.is-in { display: block; }
+.sw-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; -webkit-user-drag: none; }
+.sw-item:not(.is-center) { cursor: pointer; }
+/* 눈금 다이얼 */
+.sw-dial { position: absolute; left: 50%; top: 66%; width: 170px; height: 90px; translate: -50% 0; pointer-events: none; }
+.sw-dial i { position: absolute; left: 50%; bottom: 10px; width: 2px; height: 18px; background: #111; transform-origin: 50% 70px; translate: -50% -52px; }
+.sw-dial i:nth-child(1) { rotate: -90deg; } .sw-dial i:nth-child(2) { rotate: -60deg; } .sw-dial i:nth-child(3) { rotate: -30deg; }
+.sw-dial i:nth-child(5) { rotate: 30deg; } .sw-dial i:nth-child(6) { rotate: 60deg; } .sw-dial i:nth-child(7) { rotate: 90deg; }
+.sw-dial i.is-on { height: 34px; width: 4px; translate: -50% -60px; transform-origin: 50% 78px; }
+.sw-dial b { position: absolute; left: 50%; bottom: 0; width: 14px; height: 14px; translate: -50% 0; background: #111; }
+/* « » · 공간 설명 · DRAG */
+.sw-nav { position: absolute; z-index: 5; left: 50%; top: calc(66% + 120px); translate: -50% 0; display: flex; gap: 18px; }
+.sw-nav button { width: 96px; height: 56px; border: 1px solid #E4E4E2; background: #F3F3F2; color: #666; font-size: 20px; cursor: pointer; transition: background .25s, color .25s; }
+.sw-nav button:hover { background: #111; color: #FFF; }
+.sw-info { position: absolute; z-index: 5; left: 50%; top: calc(66% + 196px); translate: -50% 0; margin: 0; font-size: 14px; line-height: 1.4; color: #111; white-space: nowrap; }
+.sw-info strong { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.sw-drag { position: absolute; z-index: 5; right: 1.5vw; top: 38%; padding: 14px 18px; background: #111; color: #FFF; font: 400 18px/1 "Anton", sans-serif; letter-spacing: .04em; pointer-events: none; }
+@media (max-width: 767px) {
+  .sw-tabs { top: 12px; } .sw-tab { padding: 10px 12px; font-size: 11px; }
+  .sw-dial { top: 64%; scale: .8; } .sw-nav { top: calc(64% + 96px); } .sw-nav button { width: 72px; height: 46px; }
+  .sw-info { top: calc(64% + 160px); white-space: normal; width: 86%; text-align: center; }
+  .sw-drag { display: none; }
+}
+/* 눈금 다이얼을 SVG 로 (위 CSS 눈금 대신) */
+.sw-dial { overflow: visible; }
+/* 배경 큰 글자 윗부분이 잘리지 않게 (학생 요청) — 위로 당기던 -1vw 와 좁은 행간(.86)을 풀고 위에서 조금 띄움, 사라지는 그라데이션도 아래로 */
+.sw-word { margin-top: 3.2vw; line-height: 1; padding-top: .04em; }
+.sw-bg { -webkit-mask: linear-gradient(to bottom, #000 45%, transparent 88%); mask: linear-gradient(to bottom, #000 45%, transparent 88%); }
+/* 배경 큰 글자를 참고 화면 형태로 (학생 요청) — 화면 폭 98% · 위 1.5%부터 높이 78%까지 세로로 길게 늘린 글자, 아래로 갈수록 흰색으로 사라짐
+   (글자 잉크 상자를 재서 SVG 로 늘리므로 위가 잘리지 않음 · space-wheel.js fitWord) */
+.sw-bg { display: block; -webkit-mask: linear-gradient(to bottom, #000 0%, #000 52%, transparent 80%); mask: linear-gradient(to bottom, #000 0%, #000 52%, transparent 80%); }
+.sw-word-svg { position: absolute; left: 1%; top: 1.5%; width: 98%; height: 78%; overflow: visible; }
+.sw-word { font-family: "Anton", sans-serif; font-weight: 400; fill: #F2F2F1; margin: 0; padding: 0; }
+.sw-stage.is-swap .sw-word-svg { animation: sw-word .6s cubic-bezier(.22,1,.36,1); }
+.sw-stage.is-swap .sw-word { animation: none; }
+/* 배경 큰 글자 살짝 위로 (학생 요청) — 위의 작은 '공간' 장 이름을 휠 무대 위에 겹쳐 올려 무대가 그만큼 위에서 시작, 글자는 무대 맨 위 0.5%부터 · DRAG 표시는 삭제 */
+.cl-chapter.sw .cl-head { position: absolute; z-index: 6; top: 0; left: 0; right: 0; margin: 0; padding-top: 4px; }
+.sw-word-svg { top: .5%; }
+.sw-drag { display: none; }
+/* 배경 큰 글자 조금 더 위로 (학생 요청) — 글자가 잘리지 않게 휠 무대째 앞 장(사람)의 아래 빈 여백 쪽으로 5vw 끌어올림
+   · 사진 뒤의 원 호·바큇살 가는 선 삭제 */
+.cl-chapter.sw { margin-top: -5vw; }
+.sw-lines { display: none; }
+/* 휠 아래쪽 경계 풀기 (학생 요청) — 원 아래로 돌아 내려가는 옆 사진들이 무대 끝에서 잘려 선이 생기던 것을, 사진 층 아래쪽을 서서히 흰색으로 사라지게 */
+.sw-wheel { -webkit-mask: linear-gradient(to bottom, #000 0%, #000 58%, transparent 80%); mask: linear-gradient(to bottom, #000 0%, #000 58%, transparent 80%); }
+/* 장 이름 '공간'을 오른쪽 위에서 → 아래 공간 설명(LAKE — …) 바로 밑 가운데로 */
+.cl-chapter.sw .cl-head { top: calc(max(100svh, 640px) * .66 + 232px); left: 50%; right: auto; translate: -50% 0; padding: 0; text-align: center; white-space: nowrap; }
+@media (max-width: 767px) { .cl-chapter.sw .cl-head { top: calc(max(100svh, 640px) * .64 + 214px); } }
+/* '공간' 글자 크기를 위의 공간 설명(LAKE — …)과 같게 (학생 요청 · 이전 12px 대문자 자간 .06em) */
+.cl-chapter.sw .cl-head { font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: normal; color: #111; }
+
+/* ── 6주 커스텀: 아카이브 시선 파트 '깜빡임' (학생 요청 · 아이디어 1) · 동작은 blink.js ──
+   무대는 화면 한 장으로 고정(sticky), 사진은 화면 가득, 위아래 검은 눈꺼풀(SVG 곡선)이 스크롤에 따라 감기고 떠진다. */
+.cl-chapter.bk { max-width: none; padding: 0; margin: 0; }
+.bk-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: #0C0C0C; }
+.cl-chapter.bk:not(.is-live) .bk-stage { position: relative; }
+.bk-frame { position: absolute; inset: 0; }
+.bk-img { width: 100%; height: 100%; object-fit: cover; display: block;
+  transform: scale(calc(1.06 - .06 * var(--open, 1))); filter: brightness(calc(.6 + .4 * var(--open, 1))); }
+.bk-lids { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.bk-lid { fill: #0C0C0C; }
+.bk-intro { position: absolute; inset: 0; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: #F2F2F0; text-align: center; pointer-events: none; }
+.bk-intro__h { font-size: 12px; font-weight: 500; letter-spacing: .1em; }
+.bk-intro__t { font-size: clamp(22px, 2.6vw, 40px); font-weight: 500; letter-spacing: -.02em; line-height: 1.2; word-break: keep-all; padding: 0 16px; }
+.bk-meta { position: absolute; left: 24px; bottom: 22px; margin: 0; display: flex; gap: 16px; color: #FFFFFF; mix-blend-mode: difference; font-size: 12px; font-weight: 500; letter-spacing: .08em; opacity: var(--open, 1); }
+.bk-reason { position: absolute; left: 50%; bottom: 9vh; translate: -50% 0; margin: 0; max-width: 86vw; color: #FFFFFF; mix-blend-mode: difference;
+  font-size: clamp(18px, 2vw, 30px); font-weight: 500; letter-spacing: -.02em; text-align: center; word-break: keep-all; transition: opacity .2s linear; }
+
+/* ── 6주 커스텀: 아카이브 시선 파트 — 카메라 뷰파인더로 들어가기 (학생 요청) · 동작은 camera.js ── */
+.cl-chapter.cam { max-width: none; padding: 0; margin: 0; }
+.cam-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: #FFFFFF; }
+.cl-chapter.cam:not(.is-live) .cam-stage { position: relative; }
+.cam-photo { position: absolute; inset: 0; background: #FFFFFF; }
+.cam-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .35s ease; }
+.cam-img.is-on { opacity: 1; }
+.cam-body { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform-origin: 0 0; will-change: transform; pointer-events: none; overflow: visible; }
+.cam-cap { position: absolute; left: 50%; bottom: 9vh; translate: -50% 0; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; color: #111; pointer-events: none; }
+.cam-cap__h { font-size: 12px; font-weight: 500; letter-spacing: .1em; }
+.cam-cap__t { font-size: clamp(18px, 1.9vw, 28px); font-weight: 500; letter-spacing: -.02em; word-break: keep-all; }
+/* 뷰파인더 안 표시 */
+.cam-ui { position: absolute; inset: 4vh 3vw; pointer-events: none; opacity: 0; color: #FFF; mix-blend-mode: difference; }
+.cam-ui__c { position: absolute; width: 34px; height: 34px; border: 0 solid #FFF; }
+.cam-ui__c--tl { left: 0; top: 0; border-width: 1.5px 0 0 1.5px; } .cam-ui__c--tr { right: 0; top: 0; border-width: 1.5px 1.5px 0 0; }
+.cam-ui__c--bl { left: 0; bottom: 0; border-width: 0 0 1.5px 1.5px; } .cam-ui__c--br { right: 0; bottom: 0; border-width: 0 1.5px 1.5px 0; }
+.cam-ui__focus { position: absolute; left: 50%; top: 50%; width: 64px; height: 44px; translate: -50% -50%; border: 1px solid rgba(255,255,255,.9); }
+.cam-ui__group, .cam-ui__count { position: absolute; top: 14px; font-size: 12px; font-weight: 500; letter-spacing: .1em; }
+.cam-ui__group { left: 48px; } .cam-ui__count { right: 48px; }
+.cam-reason { position: absolute; left: 50%; bottom: 10vh; translate: -50% 0; margin: 0; max-width: 84vw; color: #FFF; mix-blend-mode: difference; opacity: 0;
+  font-size: clamp(18px, 2vw, 30px); font-weight: 500; letter-spacing: -.02em; text-align: center; word-break: keep-all; }
+.cam-flash { position: absolute; inset: 0; background: #FFF; opacity: 0; pointer-events: none; }
+.cam-flash.is-on { animation: cam-flash .32s ease-out; }
+@keyframes cam-flash { 0% { opacity: .85; } 100% { opacity: 0; } }
+/* 카메라 뒷면 3D 기울기 층 (학생 요청 — 찍는 사람 시점 · 실사 느낌) — camera.js 가 rotateX/rotateY 를 넣는다. 들어갈수록 정면으로 펴짐 */
+.cam-rig { position: absolute; inset: 0; transform-origin: 50% 55%; will-change: transform; pointer-events: none; }
+
+/* ── 6주 커스텀: 아카이브 시선 파트 — 밀착 인화지 한 장 (학생 요청 · 스크롤로 넘기지 않는 한 화면 배치) ──
+   세 줄(SKY · HAND · ROAD) × 다섯 칸(3:2), 왼쪽 15%에 묶음 이름과 고른 이유, 칸 아래 번호. 화면 높이 안에 다 들어오게 가운데 정렬. */
+.cl-chapter.sh { min-height: 100vh; min-height: 100svh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 3.2vh; padding: 6vh 4vw; }
+.sh-head { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; border-bottom: 1px solid #111; padding-bottom: 12px; }
+.sh-title { font-size: 12px; font-weight: 600; letter-spacing: .1em; }
+.sh-lead { font-size: clamp(16px, 1.5vw, 22px); font-weight: 500; letter-spacing: -.02em; word-break: keep-all; text-align: right; }
+.sh-rows { display: grid; gap: 2.6vh; }
+.sh-row { display: grid; grid-template-columns: 15% minmax(0, 1fr); gap: 2vw; align-items: start; }
+.sh-label { display: flex; flex-direction: column; gap: 8px; padding-top: 2px; }
+.sh-label strong { font-size: 13px; font-weight: 700; letter-spacing: .1em; }
+.sh-label span { font-size: 13px; line-height: 1.4; color: #555; word-break: keep-all; }
+.sh-frames { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .8vw; }
+.cs-board.cl .sh-frame { width: auto; margin: 0; position: relative; z-index: 1; cursor: zoom-in; }
+.cs-board.cl .sh-img { aspect-ratio: 3 / 2; background: #EEE; overflow: hidden; }
+.sh-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+.sh-frame .cl-cap { margin-top: 6px; font-size: 11px; }
+.sh-frame .cl-label { display: none; }
+@media (max-width: 767px) {
+  .cl-chapter.sh { padding: 64px 16px; }
+  .sh-head { flex-direction: column; align-items: flex-start; } .sh-lead { text-align: left; }
+  .sh-row { grid-template-columns: 1fr; gap: 10px; }
+  .sh-frames { gap: 4px; }
+}
+
+/* ── 6주 커스텀: 아카이브 시선 파트 — 라이트 테이블 (학생 요청 · 정리된 배치 대신 흩뿌린 인화지 한 화면) · 동작은 lighttable.js ──
+   사진 = 흰 테두리 인화지(원래 비율, 자르지 않음) · 제각각 크기(11–17vw)·기울기(-9~9°)·겹침 · 하늘은 위, 손은 가운데, 길은 아래.
+   .lt-table 이 사진들의 쌓임 맥락(z 1)이라, 뷰파인더 흐림 막(z 2)이 늘 사진 위에 있다. */
+.cl-chapter.lt { max-width: none; padding: 0; }
+.lt-table { position: relative; z-index: 1; height: 100vh; height: 100svh; min-height: 680px; overflow: hidden; }
+.lt-word { position: absolute; left: 50%; top: 50%; translate: -50% -52%; font-size: min(42vw, 78vh); font-weight: 200; letter-spacing: -.06em; line-height: 1; color: #F3F3F2; white-space: nowrap; pointer-events: none; user-select: none; }
+.lt-head { position: absolute; left: 4vw; top: 3.5vh; z-index: 0; margin: 0; display: flex; gap: 14px; align-items: baseline; font-size: clamp(14px, 1.2vw, 18px); font-weight: 500; letter-spacing: -.01em; word-break: keep-all; }
+.lt-head span { font-size: 11px; font-weight: 600; letter-spacing: .12em; }
+.lt-note { position: absolute; left: var(--x); top: var(--y); z-index: 0; margin: 0; max-width: 22vw; font-size: 12px; line-height: 1.45; color: #444; word-break: keep-all; }
+.lt-note strong { display: block; font-size: 11px; letter-spacing: .12em; color: #111; margin-bottom: 4px; }
+.cs-board.cl .lt-print {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w); margin: 0; box-sizing: border-box;
+  padding: .5vw .5vw 1.8vw; background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12), 0 8px 22px rgba(0,0,0,.10);
+  transform: translate(calc(var(--px, 0px) + var(--dx, 0px)), calc(var(--py, 0px) + var(--dy, 0px))) rotate(var(--r, 0deg)) scale(var(--s, 1));
+  transition: box-shadow .35s ease, scale .35s ease; cursor: grab; touch-action: auto; user-select: none;
+}
+.cs-board.cl .lt-print.is-lift { --s: 1.05; cursor: grabbing; box-shadow: 0 2px 4px rgba(0,0,0,.14), 0 26px 48px rgba(0,0,0,.20); }
+.cs-board.cl .lt-img { aspect-ratio: auto; background: #EEE; overflow: hidden; }
+.lt-img img { width: 100%; height: auto; display: block; pointer-events: none; -webkit-user-drag: none; }
+.lt-print .cl-cap { position: absolute; left: .7vw; right: .7vw; bottom: .45vw; margin: 0; font-size: 10px; letter-spacing: .08em; color: #777; }
+.lt-print .cl-label { font-size: 10px; }
+.lt-print .cl-label br { display: none; }
+@media (max-width: 767px) {
+  .lt-table { min-height: 760px; }
+  .cs-board.cl .lt-print { width: calc(var(--w) * 1.9); }
+  .lt-note { display: none; }
+  .lt-head { flex-direction: column; gap: 6px; right: 16px; }
+}
+/* 제목 줄·고른 이유 메모는 뷰파인더 흐림 막(z 2) 위(z 3)에 — 늘 또렷하게, 사진 위에 놓여도 읽히게 흰 바탕 */
+.cl-chapter.lt { position: relative; }
+.cl-chapter.lt .lt-head, .cl-chapter.lt .lt-note { z-index: 3; pointer-events: none; }
+.cl-chapter.lt .lt-note { background: rgba(255,255,255,.88); padding: 8px 10px; }
+
+/* ── 6주 커스텀: 아카이브(index) 페이지 바탕 전체를 흰색으로 (학생 요청) ──
+   body 기본 바탕(--c-stage, 검정)이 화면 끝·스크롤을 끝까지 당겼을 때·구역 사이 틈으로 비치던 것을 흰색으로. 상세 페이지는 그대로 */
+html:has(body.pg-archive), body.pg-archive { background: #FFFFFF; }
+body.pg-archive { --c-stage: #FFFFFF; color: #111111; }
+
+/* ── 6주 커스텀: 아카이브 뷰파인더 흐림 막 — 흰 바탕 위 반투명 흐림, 경계선 없게 (학생 요청) ──
+   · 막 자체를 흰색 반투명(45%)으로 덮어 바탕과 같은 흰색에서 시작
+   · 위아래뿐 아니라 좌우 끝도 서서히 사라지게(가장자리 4방향 페더) → 막의 네모 테두리가 보이지 않음
+   · 사진 칸의 회색 바탕을 투명하게(흐린 사진 둘레에 회색이 번지지 않게) */
+.pg-archive .cl-img { background: transparent; }
+.pg-archive .vf-veil {
+  background: rgba(255,255,255,.45);
+  -webkit-backdrop-filter: blur(10px) saturate(.4) brightness(1.06); backdrop-filter: blur(10px) saturate(.4) brightness(1.06);
+  -webkit-mask:
+    linear-gradient(to bottom, transparent 0, #000 var(--feather, 140px), #000 calc(100% - var(--feather, 140px)), transparent 100%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(#000 0 0) var(--vx, -9999px) var(--vy, -9999px) / var(--vw, 0) var(--vh, 0) no-repeat;
+  -webkit-mask-composite: source-in, source-out;
+  mask:
+    linear-gradient(to bottom, transparent 0, #000 var(--feather, 140px), #000 calc(100% - var(--feather, 140px)), transparent 100%) 0 0 / 100% 100% no-repeat intersect,
+    linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%) 0 0 / 100% 100% no-repeat subtract,
+    linear-gradient(#000 0 0) var(--vx, -9999px) var(--vy, -9999px) / var(--vw, 0) var(--vh, 0) no-repeat;
+}
+
+/* ── 6주 커스텀: 아카이브 시선 파트 — 옆으로 흐르는 사진 띠 (학생 요청 · 시선 파트만) · 동작은 hscroll.js ──
+   무대(화면 한 장) 고정 · 사진은 가로 한 줄로, 크기(세로 3:4 / 가로 4:3 / 정사각)와 높이(--t)를 바꿔 가며 흩어 놓고 일부는 살짝 겹침.
+   묶음이 바뀌는 칸은 앞을 넓게 띄움. 뒤 큰 반전 타이틀(SKY·HAND·ROAD)은 무대 가운데 그대로, 뷰파인더는 전체. */
+.cl-chapter.hz { max-width: none; padding: 0; }
+.hz-stage { position: relative; height: 100vh; height: 100svh; min-height: 620px; overflow: hidden; }
+.cl-chapter.hz.is-live .hz-stage { position: sticky; top: 0; }
+.cl-chapter.hz .cl-sticky { position: absolute; inset: 0; height: auto; margin: 0; }
+.hz-track { position: relative; z-index: 1; height: 100%; display: flex; align-items: flex-start; padding: 0 10vw 0 6vw; width: max-content; will-change: transform; }
+.cs-board.cl .hz .hz-item { position: relative; flex: none; width: auto; margin: var(--t, 14vh) 0 0 -3vh; z-index: 1; }
+.cs-board.cl .hz .hz-item:first-child { margin-left: 0; }
+.cs-board.cl .hz .hz-p { width: 30vh; } .cs-board.cl .hz .hz-p .cl-img { aspect-ratio: 3 / 4; }
+.cs-board.cl .hz .hz-l { width: 50vh; } .cs-board.cl .hz .hz-l .cl-img { aspect-ratio: 4 / 3; }
+.cs-board.cl .hz .hz-s { width: 36vh; } .cs-board.cl .hz .hz-s .cl-img { aspect-ratio: 1 / 1; }
+.cs-board.cl .hz .hz-item + .hz-item { margin-left: 4vh; }
+.cs-board.cl .hz .hz-item:nth-child(3n) { margin-left: -5vh; }   /* 세 칸마다 앞 사진과 살짝 겹침 */
+.cs-board.cl .hz .hz-text { width: 30vh; margin-top: 62vh; margin-left: 6vh; }
+.cs-board.cl .hz .hz-start { margin-left: 22vh; }                  /* 묶음이 바뀌는 자리는 넓게 */
+.hz .cl-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 767px) {
+  .cs-board.cl .hz .hz-p { width: 34vh; } .cs-board.cl .hz .hz-l { width: 46vh; } .cs-board.cl .hz .hz-s { width: 36vh; }
+  .cs-board.cl .hz .hz-text { width: 70vw; }
+}
+.cs-board.cl .hz .hz-item.hz-start { margin-left: 22vh; }   /* 묶음 사이 넓게 — 위 겹침 규칙보다 우선 */
+/* 사진이 안 보이던 원인 수정 — 시스템의 '떠오름' 효과는 칸(.cs-row)이 화면에 들어올 때 .is-in 을 붙여야 사진(.cs-tile)이 보이는데,
+   옆으로 흐르는 띠의 칸에는 그 표시가 없어 사진이 투명한 채로 남았다. 시선 띠에서는 떠오름 없이 늘 보이게 */
+.m-on .hz .cs-tile { opacity: 1; transform: none; }
+.m-on .hz .cs-tile img { transform: none; }
+
+/* ── 6주 커스텀: 시선 띠 수정 (학생 요청) — 사진 크기 줄임 · 가운데 큰 타이틀을 사진 위로 ──
+   사진: 세로 30→22vh · 가로 50→36vh · 정사각 36→26vh, 높이 흩어짐(--t)은 무대 가운데 쪽으로 조금 모음
+   타이틀: 반전 겹침(exclusion)을 빼고 검정 글자로, 사진·흐림 막보다 위(z 4)에 */
+.cs-board.cl .hz .hz-p { width: 22vh; }
+.cs-board.cl .hz .hz-l { width: 36vh; }
+.cs-board.cl .hz .hz-s { width: 26vh; }
+.cs-board.cl .hz .hz-item:not(.hz-text) { margin-top: calc(var(--t, 14vh) + 8vh); }
+.cs-board.cl .hz .hz-text { margin-top: 64vh; }
+.cs-board.cl .hz .cl-sticky { z-index: 4; mix-blend-mode: normal; }
+.cs-board.cl .hz .cl-big { color: #111111; }
+@media (max-width: 767px) { .cs-board.cl .hz .hz-p { width: 24vh; } .cs-board.cl .hz .hz-l { width: 34vh; } .cs-board.cl .hz .hz-s { width: 26vh; } }
+/* 시선 띠(화면 폭 가득)에서는 흐림 막 좌우 끝 페더를 빼서, 화면 양끝 사진까지 고르게 흐리게 — 위아래 페더만 */
+.pg-archive .hz .vf-veil {
+  -webkit-mask:
+    linear-gradient(to bottom, transparent 0, #000 var(--feather, 140px), #000 calc(100% - var(--feather, 140px)), transparent 100%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(#000 0 0) var(--vx, -9999px) var(--vy, -9999px) / var(--vw, 0) var(--vh, 0) no-repeat;
+  -webkit-mask-composite: source-out;
+  mask:
+    linear-gradient(to bottom, transparent 0, #000 var(--feather, 140px), #000 calc(100% - var(--feather, 140px)), transparent 100%) 0 0 / 100% 100% no-repeat subtract,
+    linear-gradient(#000 0 0) var(--vx, -9999px) var(--vy, -9999px) / var(--vw, 0) var(--vh, 0) no-repeat;
+}
+
+/* ── 6주 커스텀: 아카이브 사람 파트 — 앨범 패키지 (학생 요청 · 아이디어 4) · 동작은 album.js ──
+   화면 한 장: 왼쪽 CD 케이스(정사각, 플라스틱 테·경첩·빛 반사) + 뒤의 CD(트랙 사진이 인쇄된 원판 · 무지갯빛 결),
+   오른쪽 뒷면 트랙 리스트. 트랙에 올리면 CD 가 오른쪽으로 반쯤 미끄러져 나와 돈다. */
+.cl-chapter.al { max-width: none; padding: 0; }
+.al-stage { min-height: 100vh; min-height: 100svh; box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; gap: 4vw; padding: 10vh 6vw; }
+.al-pack { position: relative; width: min(38vw, 64vh); aspect-ratio: 1; justify-self: center; }
+.al-disc { position: absolute; inset: 4%; border-radius: 50%; overflow: hidden; z-index: 0;
+  transition: transform 1s cubic-bezier(.22,1,.36,1); box-shadow: 0 6px 24px rgba(0,0,0,.18); }
+.al-pack.is-out .al-disc { transform: translateX(46%); }
+.al-disc__art { position: absolute; inset: 0; background-size: cover; background-position: center; filter: saturate(1.1);
+  animation: al-spin 6s linear infinite; animation-play-state: paused; transition: background-image .3s; }
+.al-pack.is-out .al-disc__art { animation-play-state: running; }
+.al-disc::before { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 50%;
+  background: conic-gradient(from 20deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(160,220,255,.18), rgba(255,255,255,0) 30%, rgba(255,200,240,.22), rgba(255,255,255,.4), rgba(255,255,255,0) 70%, rgba(200,255,220,.2), rgba(255,255,255,0));
+  mix-blend-mode: screen; }
+.al-disc::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 50%;
+  background: radial-gradient(circle, transparent 0 15%, rgba(255,255,255,.65) 15.4% 17%, rgba(0,0,0,.18) 17.4% 19%, transparent 19.4% 96%, rgba(255,255,255,.5) 97%, transparent 100%); }
+.al-disc__hole { position: absolute; left: 50%; top: 50%; z-index: 2; width: 9%; height: 9%; translate: -50% -50%; border-radius: 50%; background: #FFF; box-shadow: inset 0 1px 3px rgba(0,0,0,.35); }
+@keyframes al-spin { to { transform: rotate(360deg); } }
+.al-case { position: absolute; inset: 0; z-index: 1; overflow: hidden; border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.2), 0 18px 40px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.5); background: #EDEDEB; }
+.al-cover { position: absolute; inset: 0 0 0 7%; width: 93%; height: 100%; object-fit: cover; display: block; }
+.al-cover__name { position: absolute; left: calc(7% + 18px); top: 16px; z-index: 2; color: #FFF; font: 400 clamp(26px, 3.6vw, 52px)/1 "Anton", sans-serif; letter-spacing: .02em; mix-blend-mode: difference; }
+.al-cover__sub { position: absolute; left: calc(7% + 18px); bottom: 14px; z-index: 2; color: #FFF; font-size: 11px; font-weight: 600; letter-spacing: .12em; mix-blend-mode: difference; }
+.al-case__hinge { position: absolute; left: 0; top: 0; bottom: 0; width: 7%; z-index: 2;
+  background: repeating-linear-gradient(to bottom, rgba(255,255,255,.85) 0 2px, rgba(200,200,200,.6) 2px 5px), linear-gradient(to right, #DADAD7, #F6F6F4 60%, #CFCFCC);
+  background-blend-mode: multiply; box-shadow: inset -1px 0 0 rgba(0,0,0,.15); }
+.al-case__glare { position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(118deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.08) 28%, rgba(255,255,255,0) 29%, rgba(255,255,255,0) 64%, rgba(255,255,255,.12) 65%, rgba(255,255,255,0) 80%); }
+/* 뒷면 트랙 리스트 */
+.al-back { max-width: 560px; }
+.al-kicker { margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: .12em; }
+.al-title { margin: 0; font: 400 clamp(56px, 8vw, 120px)/.9 "Anton", sans-serif; letter-spacing: .01em; }
+.al-one { margin: 14px 0 26px; font-size: clamp(15px, 1.3vw, 19px); font-weight: 500; letter-spacing: -.01em; word-break: keep-all; }
+.al-tracks { list-style: none; margin: 0; padding: 0; border-top: 1px solid #111; }
+.al-track { border-bottom: 1px solid #DADAD8; }
+.al-track__btn { width: 100%; display: flex; align-items: baseline; gap: 14px; padding: 14px 0; border: 0; background: none; color: #111; font: inherit; text-align: left; cursor: pointer; }
+.al-no { font-size: 12px; font-weight: 600; letter-spacing: .08em; color: #888; min-width: 22px; }
+.al-name { font-size: clamp(17px, 1.5vw, 22px); font-weight: 600; letter-spacing: -.02em; }
+.al-dots { flex: 1; border-bottom: 1px dotted #BBB; translate: 0 -4px; }
+.al-note { display: grid; gap: 4px; margin: 0; max-height: 0; overflow: hidden; padding-left: 36px; font-size: 13px; line-height: 1.45; color: #555; word-break: keep-all; transition: max-height .45s ease, padding .45s ease; }
+.al-track.is-on .al-note { max-height: 90px; padding-bottom: 14px; }
+.al-track.is-on .al-no { color: #111; }
+.al-play { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
+.al-play__a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid #111; border-radius: 999px; color: #111; text-decoration: none; font-size: 13px; font-weight: 600; transition: background .25s, color .25s; }
+.al-play__a:hover { background: #111; color: #FFF; }
+.al-bonus { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.al-bonus__h { font-size: 11px; font-weight: 600; letter-spacing: .12em; margin-right: 8px; }
+.al-b { width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; overflow: hidden; cursor: pointer; background: #EEE; outline-offset: 2px; transition: transform .3s; }
+.al-b img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.al-b:hover, .al-b.is-on { transform: scale(1.12); }
+.al-credit { margin: 22px 0 0; font-size: 12px; line-height: 1.6; color: #666; word-break: keep-all; }
+@media (max-width: 900px) {
+  .al-stage { grid-template-columns: 1fr; padding: 72px 16px; gap: 40px; }
+  .al-pack { width: min(70vw, 360px); justify-self: start; }
+  .al-pack.is-out .al-disc { transform: translateX(34%); }
+}
+/* CD 가 나올 자리를 비워 둠 — 왼쪽 칸 = 케이스 폭 × 1.5, 케이스는 왼쪽에 붙여서 CD 가 트랙 리스트를 덮지 않게 */
+.al-stage { --pack: min(34vw, 58vh); grid-template-columns: calc(var(--pack) * 1.5) minmax(0, 1fr); gap: 3vw; }
+.al-pack { width: var(--pack); justify-self: start; }
+@media (max-width: 900px) { .al-stage { grid-template-columns: 1fr; } .al-pack { width: min(62vw, 340px); } }
+.al-b { width: 38px; height: 38px; }   /* BONUS 사진 여섯 개가 한 줄에 들어오게 */
+/* CD 사진을 원형으로 (학생 지적) — 도는 사진 층이 따로 그려지면서 둥근 자르기가 풀려 네모로 돌던 것을,
+   CD 와 사진 층 모두 원으로 자르기(clip-path)해서 늘 원형으로 */
+.al-disc { clip-path: circle(50% at 50% 50%); -webkit-mask-image: -webkit-radial-gradient(white, black); }
+.al-disc__art { border-radius: 50%; clip-path: circle(50% at 50% 50%); }
+/* 돌아가는 CD 를 누르면 원본 사진 — 나와 있을 때만 누를 수 있다는 표시 */
+.al-pack.is-out .al-disc { cursor: zoom-in; }
+
+/* ── 6주 커스텀: 앨범 커버 누르면 CD 여섯 장 3 × 2 (학생 요청) · album.js ── */
+.al-case { cursor: pointer; }
+.al-case:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
+.al-grid { position: fixed; inset: 0; z-index: 54; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.94); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; }
+.al-grid.is-open { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+.al-grid__in { display: grid; grid-template-columns: repeat(3, var(--gd, min(22vw, 34vh))); gap: min(4vw, 6vh); }
+.al-gdisc { position: relative; width: var(--gd, min(22vw, 34vh)); aspect-ratio: 1; padding: 0; border: 0; border-radius: 50%; background: none; cursor: zoom-in;
+  clip-path: circle(50% at 50% 50%); box-shadow: 0 6px 24px rgba(0,0,0,.16);
+  transform: scale(.6) rotate(-40deg); opacity: 0; transition: transform .7s cubic-bezier(.22,1,.36,1), opacity .5s ease; transition-delay: calc(var(--i) * 60ms); }
+.al-grid.is-open .al-gdisc { transform: none; opacity: 1; }
+.al-gdisc__art { position: absolute; inset: 0; border-radius: 50%; background-size: cover; background-position: center; clip-path: circle(50% at 50% 50%); animation: al-spin 9s linear infinite; }
+.al-gdisc::before { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 50%; mix-blend-mode: screen;
+  background: conic-gradient(from 20deg, rgba(255,255,255,0), rgba(255,255,255,.35), rgba(160,220,255,.18), rgba(255,255,255,0) 30%, rgba(255,200,240,.22), rgba(255,255,255,.4), rgba(255,255,255,0) 70%, rgba(200,255,220,.2), rgba(255,255,255,0)); }
+.al-gdisc::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 50%;
+  background: radial-gradient(circle, transparent 0 15%, rgba(255,255,255,.65) 15.4% 17%, rgba(0,0,0,.18) 17.4% 19%, transparent 19.4% 96%, rgba(255,255,255,.5) 97%, transparent 100%); }
+.al-gdisc__hole { position: absolute; left: 50%; top: 50%; z-index: 2; width: 9%; height: 9%; translate: -50% -50%; border-radius: 50%; background: #FFF; box-shadow: inset 0 1px 3px rgba(0,0,0,.35); }
+.al-gdisc__no { position: absolute; left: 50%; top: 50%; z-index: 2; translate: -50% calc(-50% + 1.6em); font-size: 11px; font-weight: 600; letter-spacing: .1em; color: #FFF; mix-blend-mode: difference; }
+.al-gdisc:hover .al-gdisc__art { animation-duration: 2.4s; }
+.al-grid__close { position: absolute; top: 18px; right: 22px; border: 0; background: none; color: #111; font-size: 30px; line-height: 1; cursor: pointer; }
+@media (max-width: 767px) { .al-grid__in { --gd: 26vw; gap: 4vw; } }
+/* CD 여섯 장 화면 수정 (학생 요청) — 돌지 않게(등장할 때 회전도 뺌) · 바탕은 사진 크게 보기와 같은 짙은 검정 · CD 크기 줄임 */
+.al-grid { background: rgba(10,10,10,.94); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.al-grid__in { --gd: min(17vw, 27vh); gap: min(3.2vw, 5vh); }
+.al-gdisc { transform: scale(.85); box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+.al-gdisc__art, .al-gdisc:hover .al-gdisc__art { animation: none; }
+.al-grid__close { color: #F2F2F0; }
+@media (max-width: 767px) { .al-grid__in { --gd: 24vw; } }
+
+/* ── 6주 커스텀: 앨범 케이스 아래 음악 재생 (학생 요청 · KiiiKiii 'Pop Off Pop Off', 유튜브 공식 MV) · album.js ── */
+.al-left { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+.al-player { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.al-playbtn { display: inline-flex; align-items: center; gap: 12px; padding: 0; border: 0; background: none; color: #111; cursor: pointer; font: inherit; }
+.al-playbtn__icon { width: 44px; height: 44px; border-radius: 50%; background: #111; color: #FFF; display: grid; place-items: center; font-size: 13px; letter-spacing: -.1em; transition: transform .25s; }
+.al-playbtn:hover .al-playbtn__icon { transform: scale(1.08); }
+.al-playbtn__t { display: flex; flex-direction: column; text-align: left; font-size: 12px; color: #666; line-height: 1.3; }
+.al-playbtn__t b { font-size: 15px; color: #111; font-weight: 700; letter-spacing: -.01em; }
+.al-yt { width: 256px; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+.al-yt iframe { width: 100%; height: 100%; display: block; border: 0; }
+.al-yt__msg { margin: 0; max-width: 300px; font-size: 12px; line-height: 1.5; color: #666; }
+.al-yt__msg a { color: #111; }
+.al-pack.is-playing .al-disc__art { animation-play-state: running; }
+/* 재생되는 것처럼 — 버튼 옆 작은 이퀄라이저 막대, 재생 중일 때만 움직임 */
+.al-eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 16px; margin-left: 4px; opacity: .25; transition: opacity .3s; }
+.al-eq i { width: 3px; height: 30%; background: #111; }
+.al-playbtn.is-on .al-eq { opacity: 1; }
+.al-playbtn.is-on .al-eq i { animation: al-eq .9s ease-in-out infinite alternate; }
+.al-playbtn.is-on .al-eq i:nth-child(2) { animation-delay: -.3s; } .al-playbtn.is-on .al-eq i:nth-child(3) { animation-delay: -.6s; } .al-playbtn.is-on .al-eq i:nth-child(4) { animation-delay: -.15s; }
+@keyframes al-eq { 0% { height: 20%; } 50% { height: 100%; } 100% { height: 45%; } }
+/* HAUM 제목과 트랙 목록 사이 간격 (학생 요청 · 소개 문구를 뺀 뒤 붙어 보이던 것) */
+.al-title { margin-bottom: clamp(32px, 5vh, 56px); }
+/* 앨범 커버 윗끝 = HAUM 글자 윗끝 (학생 요청) — 두 칸을 위쪽 정렬하고, 작은 '사람' 글자는 제목 위 여백 안으로 올림 */
+.al-stage { align-items: start; align-content: center; }
+.al-back { position: relative; }
+.al-kicker { position: absolute; left: 0; bottom: 100%; margin: 0 0 10px; }
+/* 사람(앨범) 파트와 공간(휠) 파트 사이를 넓게 (학생 요청 · 이전: 공간 파트를 -5vw 끌어올려 붙여 둠) */
+.cl-chapter.sw { margin-top: clamp(80px, 12vw, 200px); }
+
+/* ── 6주 커스텀: 사람(앨범) 파트에서 잠깐 머물기 (학생 요청) ──
+   파트 높이를 화면 1장 + 0.7장으로 늘리고 무대를 화면에 고정(sticky) → 시선에서 내려오면 앨범 화면이 0.7장 스크롤 동안 멈춰 있다가
+   계속 내리면 공간 파트로 넘어간다. 휴대폰처럼 앨범이 한 화면보다 긴 폭에서는 고정하지 않는다. */
+@media (min-width: 901px) {
+  .cl-chapter.al { height: calc(100vh + 70vh); height: calc(100svh + 70svh); }
+  .cl-chapter.al .al-stage { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 0; }
+}
+
+/* ── 6주 커스텀: 아카이브 맨 아래 '세 장' 목차 (학생 요청 · 참고 aventuradentalarts.com) · 동작은 index-list.js ──
+   옅은 회색 판 · 왼쪽 큰 번호 / 가운데 정사각에 가까운 사진 / 오른쪽 작은 머리말 + 가는 선으로 나뉜 큰 명조 제목(지금 것만 진하게) */
+.cs-board.cl .cs-related.ix {
+  max-width: none; width: 100%; margin: 4vw 0 0; border-radius: 0;
+  display: grid; grid-template-columns: 16% minmax(0, 30%) minmax(0, 1fr); align-items: center; gap: 0 5vw;
+  min-height: 100vh; min-height: 100svh; box-sizing: border-box; padding: 10vh 4.5vw; background: #ECEAEA; color: #111;
+}
+.ix-count { display: flex; align-items: baseline; gap: 18px; }
+.ix-count__n { font-family: "Newsreader", "Noto Serif KR", serif; font-weight: 300; font-size: clamp(48px, 5.4vw, 90px); line-height: 1; letter-spacing: -.04em; color: #333; }
+.ix-count__t { font-size: 14px; color: #444; }
+.ix-figure { margin: 0; aspect-ratio: 5 / 6; overflow: hidden; background: #DDD; }
+.ix-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .25s ease, transform .6s cubic-bezier(.22,1,.36,1); }
+.ix-img.is-swap { opacity: 0; transform: scale(1.02); }
+.ix-kicker { margin: 0 0 18px; font-size: 14px; color: #8A8A8A; }
+.ix-rows { list-style: none; margin: 0; padding: 0; }
+.ix-row { border-top: 1px solid #D6D4D4; }
+.ix-row:last-child { border-bottom: 1px solid #D6D4D4; }
+.ix-link { display: block; padding: 3.2vh 0 4.2vh; color: #B5B3B3; text-decoration: none;
+  font-family: "Noto Serif KR", "Newsreader", serif; font-weight: 400; font-size: clamp(44px, 5.4vw, 92px); line-height: 1; letter-spacing: -.06em;
+  transition: color .35s ease; }
+.ix-row.is-on .ix-link { color: #3A3A3A; }
+.ix-link:focus-visible { outline: 2px solid #111; outline-offset: 6px; }
+@media (max-width: 900px) {
+  .cs-board.cl .cs-related.ix { grid-template-columns: 1fr; gap: 24px; padding: 64px 16px; }
+  .ix-figure { width: 70%; }
+  .ix-link { font-size: 48px; }
+}
+/* 목차 회색 판이 페이지 끝까지 오게 — 아카이브에서는 사진 판 맨 아래 흰 여백을 없앰 */
+.pg-archive .cs-board.cl { padding-bottom: 0; }
+
+/* 목차 수정 (학생 요청) — 흰 바탕 · 스크롤로 한 칸씩: 바깥(.cs-related.ix)은 스크롤 길이만 갖고, 안쪽 무대(.ix-pin)가 화면에 고정된다 */
+.cs-board.cl .cs-related.ix { display: block; padding: 0; min-height: 0; background: #FFFFFF; }
+.ix-pin { display: grid; grid-template-columns: 16% minmax(0, 30%) minmax(0, 1fr); align-items: center; gap: 0 5vw;
+  height: 100vh; height: 100svh; box-sizing: border-box; padding: 10vh 4.5vw; }
+.cs-related.ix.is-live .ix-pin { position: sticky; top: 0; }
+.ix-list { align-self: center; }
+.ix-rows { will-change: transform; }
+.ix-list { overflow: hidden; height: 62vh; -webkit-mask: linear-gradient(to bottom, transparent 0, #000 9%, #000 100%); mask: linear-gradient(to bottom, transparent 0, #000 9%, #000 100%); }
+.ix-kicker { position: relative; z-index: 1; background: #FFF; padding-top: 6vh; }
+.ix-row { transition: none; }
+@media (max-width: 900px) { .ix-pin { grid-template-columns: 1fr; padding: 72px 16px; gap: 20px; } .ix-list { height: 40vh; } }
+/* 목차 번호·제목을 명조 대신 사이트 맨 위 한글과 같은 Pretendard 로 (학생 요청) */
+.ix-count__n, .ix-link { font-family: var(--f-sans); }
+.ix-count__n { font-weight: 300; letter-spacing: -.05em; }
+.ix-link { font-weight: 400; letter-spacing: -.05em; }
+
+/* ── 6주 커스텀: 상세 페이지(시선·사람·공간)에 아카이브 파트를 그대로 옮긴 뒤 (학생 요청) ──
+   한 페이지에 그 파트만 있으므로: 위쪽 여백 0, 앨범은 머물기(고정) 없이 화면 한 장, 공간 휠은 위 여백 없이 */
+.pg-detail .cs-board.cl { padding-top: 0; }
+.pg-detail .cl-chapter.al { height: auto; }
+.pg-detail .cl-chapter.al .al-stage { position: relative; height: auto; min-height: 100vh; min-height: 100svh; }
+.pg-detail .cl-chapter.sw { margin-top: 0; }
+/* 아카이브: '나의 취향 아카이브' 다음에 바로 목차 (학생 요청) — 사이 안개 띠(화면 한 장)와 위 여백을 없앰 */
+.pg-archive:not(.pg-detail) .cs-curtain { display: none; }
+.pg-archive:not(.pg-detail) .cs-board.cl { padding-top: 0; }
+.pg-archive:not(.pg-detail) .cs-board.cl .cs-related.ix { margin-top: 0; }
+/* 시선 페이지(아래로 스크롤 콜라주) — 가운데 큰 타이틀을 사진·흐림 위에 검정 글자로 (옆 스크롤 띠 때와 같게) */
+.pg-detail .cs-board.cl .cl-chapter:not(.hz) .cl-sticky { z-index: 4; mix-blend-mode: normal; }
+.pg-detail .cs-board.cl .cl-chapter:not(.hz) .cl-big { color: #111111; }
+.pg-detail .cs-board.cl .cl-chapter#ch1 { padding-top: 6vw; }
+/* 시선 페이지 수정 (학생 요청) — 뷰파인더 뺌 · SKY/HAND/ROAD 를 화면 가운데 고정 · 사진과 겹친 부분만 반전(엑스레이)
+   큰 글자: 흰 글자 + exclusion 을 사진보다 위에 → 흰 바탕에서는 검정, 사진 위에서는 사진 색이 뒤집혀 보임 */
+.pg-detail .cs-board.cl .cl-chapter#ch1 .cl-sticky { z-index: 3; mix-blend-mode: exclusion; }
+.pg-detail .cs-board.cl .cl-chapter#ch1 .cl-big { color: #FFFFFF; }
+.pg-detail .cs-board.cl .cl-chapter#ch1 .cl-item { z-index: 1; }
+/* 시선 페이지 가운데 큰 글자 더 크게 (학생 요청 · 이전 14vw, 최대 220px) — 화면 폭을 넘으면 collage.js 가 폭에 맞춰 줄인다 */
+.pg-detail .cs-board.cl .cl-chapter#ch1 .cl-big { font-size: clamp(110px, 24vw, 420px); }
+@media (max-width: 767px) { .pg-detail .cs-board.cl .cl-chapter#ch1 .cl-big { font-size: 28vw; } }
+/* 시선 페이지 등장 순서 (학생 요청) — 첫 화면은 빈 흰 바탕 → 스크롤하면 가운데 큰 글자가 먼저 아래에서 올라와 가운데에 고정 → 더 내리면 사진들이 올라온다
+   (큰 글자 앞에 화면 한 장, 뒤에 화면 0.6장 빈 칸) · 글자 크기는 원래(14vw)에서 아주 살짝만 키움 */
+.pg-detail .cs-board.cl .cl-chapter#ch1 { padding-top: 0; }
+.t-spacer--lead { height: 100vh; height: 100svh; }
+.t-spacer--gap { height: 60vh; height: 60svh; }
+.pg-detail .cs-board.cl .cl-chapter#ch1 .cl-big { font-size: clamp(72px, 16vw, 260px); }
+@media (max-width: 767px) { .pg-detail .cs-board.cl .cl-chapter#ch1 .cl-big { font-size: 20vw; } }
+/* 큰 글자 뒤 빈 칸 — 고정 층이 아래로 화면 한 장만큼 겹쳐 있어서(margin-bottom -100vh), 그만큼 더해 글자가 자리 잡은 뒤 0.6장 더 내려야 사진이 올라오게 */
+.t-spacer--gap { height: 160vh; height: 160svh; }
+/* 시선 페이지 첫 화면 (학생 요청) — 빈 흰 화면 대신 처음부터 '시선'과 SKY 만 화면 가운데에, 스크롤하면 사진들이 아래에서 올라온다 */
+.pg-detail .cs-board.cl .cl-chapter#ch1 .cl-sticky { flex-direction: column; gap: 1.2vh; }
+.cl-kick { font-size: clamp(13px, 1.1vw, 16px); font-weight: 600; letter-spacing: .14em; color: #FFF; }
+/* 시선 페이지 가운데 고정 글자 위 작은 '시선' 삭제(학생 요청) 뒤 큰 글자만 가운데 */
+.pg-detail .cs-board.cl .cl-chapter#ch1 .cl-sticky { gap: 0; }
+/* 상세 페이지 맨 아래 목차 — 앞 내용과 붙지 않게 */
+.pg-detail .cs-board.cl .cs-related.ix { margin-top: 8vw; }
+/* 아카이브 첫 화면: '생각이 머무는 곳' 글자를 화면에서 뺌 (학생 요청) — 화면 읽기 프로그램용 제목(h1)으로만 남김 */
+.cs-hero--sphere .cs-title { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* 사진 공의 사진은 누르면 크게 — 사진 위에서는 확대 커서 */
+.sp-item { cursor: zoom-in; }
+.sp-stage.is-drag .sp-item { cursor: grabbing; }

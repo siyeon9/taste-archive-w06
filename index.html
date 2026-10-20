@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>나의 취향 아카이브</title>
+<meta name="description" content="혼자만의 시간에서 나를 찾는 사람">
+<meta property="og:title" content="나의 취향 아카이브">
+<meta property="og:description" content="혼자만의 시간에서 나를 찾는 사람">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/lake_01.jpg">
+<script>document.documentElement.className += " js";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:wght@300;400;600&family=Nanum+Gothic+Coding:wght@400;700&family=Gaegu:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="my-style.css">
+</head>
+<body class="pg-archive">
+<!-- GNB: 아카이브와 주차별 상세 페이지로 이동 -->
+<nav class="gnb" aria-label="주차 메뉴">
+  <a class="gnb__home" href="index.html" aria-current="page">시연아카이브</a>
+  <a href="week04.html">시선</a>
+  <a href="week05.html">사람</a>
+  <a href="week06.html">공간</a>
+</nav>
+
+<main class="cs-stage">
+  <!-- 첫 화면: 6주 관점 한 문장 + 공간 1 대표 사진 -->
+  <section class="cs-hero cs-hero--sphere" id="top">
+    <div class="sp-stage" role="img" aria-label="사진 판의 사진들이 구 모양으로 떠 있음 — 끌어서 돌릴 수 있음"></div>
+    <h1 class="cs-title"><span class="cs-title__text">생각이 머무는 곳</span></h1>
+  </section>
+
+  <div class="cs-over">
+    <!-- 들어가는 말: 장 이름 셋 · 나를 한 문장 · 4·5주 기준 한 줄 -->
+    <!-- 두 번째 화면 (학생 요청 · 참고 julienpianetti.com 첫 화면): 흰 바탕 · 오른쪽으로 들인 소개 문단 · 왼쪽 아래 큰 제목(글자에 마우스를 올리면 모양이 바뀜) · 오른쪽 아래 작은 사진 화면 -->
+    <section class="jp" aria-label="소개">
+      <div class="jp-pin">
+        <p class="jp-lead">혼자만의 시간에서 나를 찾는 사람.<br>나는 혼자 조용히 생각에 잠길 수 있는 곳에 머문다.<br>내 생각에 빠질 수 있는 곳.</p>
+        <div class="jp-foot">
+          <a class="jp-title" href="#ix" aria-label="나의 취향 아카이브 — 사진 판으로"><span class="jp-line">나의 취향</span><span class="jp-line">아카이브*</span></a>
+          <div class="jp-thumb" aria-hidden="true"><img src="assets/lake_01.jpg" alt=""></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 커튼: 카드가 바탕색 안개에 덮이며 이미지 판으로 넘어간다 (고치지 않는다) -->
+    <div class="cs-curtain" aria-hidden="true"></div>
+
+    <div class="cs-board cl">
+
+      <!-- 첫 화면 사진 공 · 두 번째 화면 작은 사진에 쓰는 사진 목록 (시선·사람·공간 파트를 상세 페이지로 옮긴 뒤 남김) -->
+      <ul class="src-list" hidden>
+        <li><img src="assets/w04_sky1.jpg" width="2340" height="1560" alt="1장 시선 하늘 사진 1"></li>
+        <li><img src="assets/w04_sky2.jpg" width="2340" height="1560" alt="1장 시선 하늘 사진 2"></li>
+        <li><img src="assets/w04_sky3.jpg" width="1335" height="1780" alt="1장 시선 하늘 사진 3"></li>
+        <li><img src="assets/w04_sky4.jpg" width="4030" height="3024" alt="1장 시선 하늘 사진 4"></li>
+        <li><img src="assets/w04_sky5.jpg" width="3472" height="4624" alt="1장 시선 하늘 사진 5"></li>
+        <li><img src="assets/w04_hands4.jpg" width="2070" height="1380" alt="1장 시선 손 사진 4"></li>
+        <li><img src="assets/w04_hands2.jpg" width="1287" height="1931" alt="1장 시선 손 사진 2"></li>
+        <li><img src="assets/w04_hands3.jpg" width="6000" height="4000" alt="1장 시선 손 사진 3"></li>
+        <li><img src="assets/w04_hands1.jpg" width="1395" height="1635" alt="1장 시선 손 사진 1"></li>
+        <li><img src="assets/w04_hands5.jpg" width="4608" height="3072" alt="1장 시선 손 사진 5"></li>
+        <li><img src="assets/w04_road2.jpg" width="2560" height="1885" alt="1장 시선 길 사진 2"></li>
+        <li><img src="assets/w04_road3.jpg" width="2735" height="4119" alt="1장 시선 길 사진 3"></li>
+        <li><img src="assets/w04_road4.jpg" width="3744" height="5616" alt="1장 시선 길 사진 4"></li>
+        <li><img src="assets/w04_road1.jpg" width="927" height="1648" alt="1장 시선 길 사진 1"></li>
+        <li><img src="assets/w04_road5.jpg" width="4000" height="6000" alt="1장 시선 길 사진 5"></li>
+        <li><img src="assets/w05_haeum04_gal.jpg" width="1200" height="900" alt=""></li>
+        <li><img src="assets/w05_haeum05_gal.jpg" width="1080" height="720" alt=""></li>
+        <li><img src="assets/w05_haeum06_gal.jpg" width="736" height="552" alt=""></li>
+        <li><img src="assets/w05_haeum07_gal.jpg" width="736" height="491" alt=""></li>
+        <li><img src="assets/w05_haeum08_gal.jpg" width="735" height="517" alt=""></li>
+        <li><img src="assets/w05_haeum09_gal.jpg" width="858" height="638" alt=""></li>
+        <li><img src="assets/w05_haeum01_visual.jpg" width="1080" height="721" alt="2장 사람 이유 1 고양이상 비주얼 사진 1"></li>
+        <li><img src="assets/w05_haeum03_concept.jpg" width="1200" height="1600" alt="2장 사람 이유 2 컨셉 소화력 사진 1"></li>
+        <li><img src="assets/w05_haeum04_gal.jpg" width="1200" height="900" alt="2장 사람 HAUM 사진 1"></li>
+        <li><img src="assets/w05_haeum05_gal.jpg" width="1080" height="720" alt="2장 사람 HAUM 사진 2"></li>
+        <li><img src="assets/w05_haeum06_gal.jpg" width="736" height="552" alt="2장 사람 HAUM 사진 3"></li>
+        <li><img src="assets/w05_haeum07_gal.jpg" width="736" height="491" alt="2장 사람 HAUM 사진 4"></li>
+        <li><img src="assets/w05_haeum08_gal.jpg" width="735" height="517" alt="2장 사람 HAUM 사진 5"></li>
+        <li><img src="assets/w05_haeum09_gal.jpg" width="858" height="638" alt="2장 사람 HAUM 사진 6"></li>
+        <li><img src="assets/lake_01.jpg" width="2340" height="1560" alt="3장 공간 lake 사진 1"></li>
+        <li><img src="assets/lake_02.jpg" width="2574" height="1930" alt="3장 공간 lake 사진 2"></li>
+        <li><img src="assets/lake_03.jpg" width="2574" height="1930" alt="3장 공간 lake 사진 3"></li>
+        <li><img src="assets/lake_04.jpg" width="2340" height="1560" alt="3장 공간 lake 사진 4"></li>
+        <li><img src="assets/lake_05.jpg" width="2340" height="1560" alt="3장 공간 lake 사진 5"></li>
+        <li><img src="assets/library_01.jpg" width="1288" height="1930" alt="3장 공간 library 사진 1"></li>
+        <li><img src="assets/library_02.jpg" width="2574" height="1931" alt="3장 공간 library 사진 2"></li>
+        <li><img src="assets/library_05.jpg" width="2338" height="1561" alt="3장 공간 library 사진 5"></li>
+        <li><img src="assets/library_03.jpg" width="1287" height="1930" alt="3장 공간 library 사진 3"></li>
+        <li><img src="assets/library_04.jpg" width="1335" height="1782" alt="3장 공간 library 사진 4"></li>
+        <li><img src="assets/subway_01.jpg" width="2556" height="1963" alt="3장 공간 subway 사진 1"></li>
+        <li><img src="assets/subway_04.jpg" width="2574" height="1930" alt="3장 공간 subway 사진 4"></li>
+        <li><img src="assets/subway_02.jpg" width="1311" height="1852" alt="3장 공간 subway 사진 2"></li>
+        <li><img src="assets/subway_03.jpg" width="1287" height="1930" alt="3장 공간 subway 사진 3"></li>
+        <li><img src="assets/subway_05.jpg" width="1335" height="1780" alt="3장 공간 subway 사진 5"></li>
+      </ul>
+      <!-- 세 장 — 목차 (학생 요청 · 참고: aventuradentalarts.com 목차 화면) · 동작은 index-list.js
+           왼쪽 큰 번호 01 / 03 · 가운데 사진 · 오른쪽 큰 명조 제목 목록. 스크롤하면 제목이 하나씩 위로 사라지며 다음 장으로 바뀌고(사진·번호도), 누르면 그 페이지로 -->
+      <section class="cs-related ix" id="ix" aria-labelledby="ix-title">
+        <div class="ix-pin">
+          <div class="ix-count" aria-hidden="true"><span class="ix-count__n">01</span><span class="ix-count__t">/ 03</span></div>
+          <figure class="ix-figure"><img class="ix-img" src="assets/w04_sky1.jpg" alt="1장 시선 하늘 사진 1"></figure>
+          <div class="ix-list">
+            <p class="ix-kicker" id="ix-title">세 장</p>
+            <ol class="ix-rows">
+              <li class="ix-row is-on" data-img="assets/w04_sky1.jpg" data-alt="1장 시선 하늘 사진 1"><a class="ix-link" href="week04.html">시선</a></li>
+              <li class="ix-row" data-img="assets/w05_haeum03_concept.jpg" data-alt="2장 사람 이유 2 컨셉 소화력 사진 1"><a class="ix-link" href="week05.html">사람</a></li>
+              <li class="ix-row" data-img="assets/library_01.jpg" data-alt="3장 공간 library 사진 1"><a class="ix-link" href="week06.html">공간</a></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+
+<script src="sig.js"></script>
+<script src="collage.js"></script>
+<script src="index-list.js"></script>
+<script src="sphere.js"></script>
+<script src="jp.js"></script>
+</body>
+</html>
